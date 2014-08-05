@@ -100,6 +100,9 @@ On y trouve un dossier par essai.
 * Nfc : C'est le code de base qui réagit au passage d'un tag
 * Multiplexeur: Il s'agit des tests sur le multiplexeur afin de brancher sur la carte arduino le shield nfc et l'ensemble led/bouton.
 
+
+
+
 ##Server
 
 La partie serveur est la gestion de tout ce qui est en ligne.
@@ -158,12 +161,4 @@ Si la route n'existe pas, elle renvoie un json de status *404*:
 * **200** : Tout est bon
 * **404** : La route n'existe pas
 * **4201**: Il manque le nom du dossier permettant la création d'un projet
-
-
-
-
-
-
-
-
 

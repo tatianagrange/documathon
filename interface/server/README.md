@@ -56,3 +56,6 @@ Si la route n'existe pas, elle renvoie un json de status *404*:
 * **200** : Tout est bon
 * **404** : La route n'existe pas
 * **4201**: Il manque le nom du dossier permettant la création d'un projet
+
+###Technologie
+L'API est basée sur le micro-framework **Slim Framework**

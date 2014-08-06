@@ -126,7 +126,8 @@ Cette route affiche tous les projets dans datas
 ###/projects/:id
 Cette route retourne un projet en particulier. Id est l'identifiant du projet en base.
 
-On notera qu'il est envisageable, à l'avenir, de définir plusieurs filtres de projets, directement dans l'API.
+###/projects/date/:date
+Cette route retourne tous les projets après la date indiquée
 
 ###/projects/create/:folderName
 Cette route permet d'enregistrer un projet. Il faut donner le nom du dossier où se trouve le projet et l'API se charge de l'entrer en base de donnée. Ainsi, le serveur garde la main sur la base de données, tout en permettant à n'importe quel client d'ajouter des projets Documathon.
@@ -154,6 +155,7 @@ Si la route n'existe pas, elle renvoie un json de status *404*:
 			"/projects": "Show all projects",
 			"/projects/:id": "Show One project",
 			"/projects/create/:folderName": "Create a new project in database, with de folder pass in argument"
+			"/projects/date/:date": "Return all project after the date pass in argument"
 		},
 		"status": 404,
 		"error": true,
@@ -164,6 +166,8 @@ Si la route n'existe pas, elle renvoie un json de status *404*:
 * **200** : Tout est bon
 * **404** : La route n'existe pas
 * **4201**: Il manque le nom du dossier permettant la création d'un projet
+* **4202**: Aucun projet ne possède l'id demandé.
+* **4203**: Aucun projet n'a été enrengistré depuis la date indiquée.
 
 ###Technologie
 L'API est basée sur le micro-framework **Slim Framework**

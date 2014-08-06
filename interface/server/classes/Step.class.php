@@ -33,21 +33,48 @@
 
 
 /**
- * Image
+ * Step
  *
- * This class define an image like it can use on the Server
+ * A project is made of many Step, that are define like that
  *
  * @author  Tatiana Grange
  * @since   0.1
  */
-class Image {
+class Step {
 
+    /***************
+    *  Attributes  *
+    ****************/
+    public $mId;
     public $mPath;
+    public $mAuthorId;
+    public $mText;
+    public $mProjectId;
+
     public $mAuthor;
 
-	public function __construct($path, $author){
+
+    /****************
+    *  Constructor  *
+    *****************/
+	public function __construct($path, $projectId, $text = null, $authorId = null, $id = null){
+        $this->mId = $id;
     	$this->mPath = $path;
-    	$this->mAuthor = $author;
+    	$this->mAuthorId = $authorId;
+        $this->mText = $text;
+        $this->mProjectId = $projectId;
+    }
+
+
+    /**************
+    *  Accessors  *
+    ***************/
+    public function getId(){
+        return $this->mId;
+    }
+
+    public function setId($id){
+        return $this->mId = $id;
     }
 
     public function getPath(){
@@ -58,12 +85,45 @@ class Image {
     	$this->mPath = $path;
     }
 
-    public function getAuthor(){
-        return $this->mAuthor;
+    public function getAuthorId(){
+        return $this->mAuthorId;
     }  
 
-    public function setAuthor($author){
-    	$this->mAuthor = $author;
+    public function setAuthorId($authorId){
+    	$this->mAuthorId = $authorId;
+    }
+
+    public function getText(){
+        return $this->mText;
+    }  
+
+    public function setText($text){
+        $this->mText = $text;
+    }
+
+    public function getProjectId(){
+        return $this->mProjectId;
+    }  
+
+    public function setProjectId($projectId){
+        $this->mProjectId = $projectId;
+    }
+
+
+    /**************
+    *  Functions  *
+    ***************/
+
+    /**
+    *   This function return the object Author.
+    */
+    public function requestForAuthor(){
+        if($this->mAuthor == null){
+            //Make request
+            $this->mAuthor = null;
+        }
+
+        return $this->mAuthor;
     }
 }
 ?>

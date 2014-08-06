@@ -10,6 +10,8 @@ D'une manière générale, on retrouve dans chaque réponse de l'API les champs 
 * **error** Cela précise si on a récupéré une erreur ou un succes
 * **msg** Le message permet d'ajouter des information sur la réponse, que ce soit sur le type d'erreur rencontré ou sur l'état des données.
 
+Une version de l'api se trouve à [cette adresse](http://api.documathon.tgrange.com/)
+
 Voici le protocole de l'API:
 
 ###/projects

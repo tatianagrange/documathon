@@ -1,1 +1,55 @@
-.git/hooks/pre-commit
+#!/bin/sh
+
+####################
+# Adjuste the path #
+####################
+prefix="./"
+
+###########################################
+# This is where the documentation file is #
+###########################################
+documentation=$prefix"doc/documentation.md"
+
+################################################
+# Define here all path for the readme you want #
+################################################
+racine=$prefix"README.md"
+
+interface=$prefix"interface/README.md"
+aboutServer=$prefix"interface/server/README.md"
+
+object=$prefix"object/README.md"
+aboutBox=$prefix"object/box/README.md"
+aboutArduino=$prefix"object/arduino/README.md"
+aboutRasp=$prefix"object/rasp/README.md"
+
+########################################################
+# So this is how documentation start, with a simple rm #
+########################################################
+echo "1. Delete actual documentation"
+rm $documentation
+
+echo "2. Create new file of documentation"
+touch $documentation
+
+echo "3. Print each README.md on the new file of documentation"
+
+function add {
+	cat $1 >> $documentation
+	echo "\n" >> $documentation
+} 
+
+############################################################
+# Add here one line by new README. The order is important. #
+# It is why the READMEs are not automaticaly added.        #
+############################################################
+add $racine
+add $object
+add $aboutBox
+add $aboutArduino
+add $aboutRasp
+add $interface
+add $aboutServer
+
+echo "4. Amend commit to add the changes in documentation if needed"
+git add $documentation

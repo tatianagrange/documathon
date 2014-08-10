@@ -41,6 +41,9 @@ Dans **object** se trouve tout ce qui est lié à l'objet physique. On y retrouv
 
 **hooks** est un dossier à part. On y liste les hooks qui permettent de simplifier la production sur le projet. Par exemple, pre-commit est appellé juste avant chaque commit. On y recompile la documentation qui se trouve dans doc, afin qu'elle soit à jour dès que l'on change l'un des fichiers README référencés comme faisant partie de la documentation.
 
+###Photos
+Les photos et vidéos du projet sont [ici](http://goo.gl/cmwZ7Z). Chaque image comporte une légende qui donne la version du Documathon sur la photo, ainsi qu'une explication. 
+
 ##L'objet
 
 ###V0.1

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Documathon</title>
+    </head>
+ 
+    <body>
+        <h1>Documathon: Lire sur le port série</h1>
+
+        <p id="read">La led est <strong></strong></p>
+
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io.connect('http://localhost:8080');
+            socket.on('message', function(message) {
+                alert('Le serveur a un message pour vous : ' + message);
+            });
+
+            socket.on('ledOn', function(data) {
+                $('#read strong').html("allumée");
+            });
+
+            socket.on('ledOff', function(data) {
+                $('#read strong').html("éteinte");
+            });
+
+            $('#poke').click(function () {
+               alert('poke');
+              socket.emit('message', 'Salut serveur, ça va ?');
+            });
+        </script>
+    </body>
+</html>

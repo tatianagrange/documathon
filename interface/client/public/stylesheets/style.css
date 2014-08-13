@@ -1,0 +1,85 @@
+@font-face {
+    font-family: "Tack";
+    src: url(fonts/Track.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "Sintony";
+    src: url(fonts/Sintony.otf) format("truetype");
+}
+
+@font-face {
+    font-family: "SintonyB";
+    src: url(fonts/Sintony-Bold.otf) format("truetype");
+    font-weight: bold;
+}
+
+/** {
+   margin: 0px;
+   padding: 0px;
+}
+
+html{ 
+	height: 100% 
+}
+
+body{
+	height: 100%; 
+	background-color: #34495e;
+	text-align: center;
+	color: #ffffff;
+	font-family: "Sintony", Verdana, Tahoma;
+}*/
+
+html,
+body {
+   	margin:0;
+   	padding:0;
+   	height:100%;
+  	background-color: #34495e;
+  	text-align: center;
+	color: #ffffff;
+	font-family: "Sintony", Verdana, Tahoma;
+}
+
+#wrapper {
+  	min-height:100%;
+  	position:relative;
+  	margin-left: 15%;
+  	margin-right: 15%;
+  	background-color: #3498db;
+}
+
+header {
+  	padding:10px;
+}
+
+main {
+  width: 50%;
+  	padding:10px;
+   	padding-bottom:60px;   /* Height of the footer */
+}
+
+footer {
+   	position:absolute;
+   	bottom:0;
+   	width:100%;
+   	height:60px;
+}
+
+h1{
+	font-size: 5em;
+	font-family: "Tack", Verdana, Tahoma;
+}
+
+aside{
+	font-size: 1.8em;
+}
+
+footer{
+    position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+    height: 50pt;
+}

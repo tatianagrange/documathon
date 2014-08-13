@@ -29,7 +29,10 @@ On trouve également dans la boîte la carte arduino, la carte nfc, deux breadbo
 * La carte Arduino sera branchée sur le Raspberry, mais une sortie pour faire passer un cable supplémentaire pourrait être utile.
 * Remonter la sortie usb, conçu à l'envers.
 * Remplacer les boutons de partage par des switch
-* Faire la boite en plexi?
+* Retirer le bouton wordpress, le mettre en partage automatique
+* Faire la boite en plexi
+* Remplacer le bouton *next* par *ok*
+* Ajouter des boutons de flèches
 
 Le matériel suivant a été commandé pour réaliser une meilleur boite
 * Pushbutton métalique. Ce bouton rond permettra de remplacer un couple bouton/led pour le partage. Il a l'avantage de pouvoir être maintenu facilement au moyen d'un écrou et d'être éclairé.

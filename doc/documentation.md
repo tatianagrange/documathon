@@ -75,7 +75,10 @@ On trouve également dans la boîte la carte arduino, la carte nfc, deux breadbo
 * La carte Arduino sera branchée sur le Raspberry, mais une sortie pour faire passer un cable supplémentaire pourrait être utile.
 * Remonter la sortie usb, conçu à l'envers.
 * Remplacer les boutons de partage par des switch
-* Faire la boite en plexi?
+* Retirer le bouton wordpress, le mettre en partage automatique
+* Faire la boite en plexi
+* Remplacer le bouton *next* par *ok*
+* Ajouter des boutons de flèches
 
 Le matériel suivant a été commandé pour réaliser une meilleur boite
 * Pushbutton métalique. Ce bouton rond permettra de remplacer un couple bouton/led pour le partage. Il a l'avantage de pouvoir être maintenu facilement au moyen d'un écrou et d'être éclairé.
@@ -105,6 +108,50 @@ On y trouve un dossier par essai.
 * Box : Il s'agit de l'essai permettant de faire clignotter les leds à l'appui sur les boutons
 * Nfc : C'est le code de base qui réagit au passage d'un tag
 * Multiplexeur: Il s'agit des tests sur le multiplexeur afin de brancher sur la carte arduino le shield nfc et l'ensemble led/bouton.
+
+###Protocole
+Le protocole applicatif permet de définir l’organisation des données envoyées entre la carte Arduino et le Raspberry Pi. Il est très important que ce protocole soit clairement défini afin qu’il ne puisse y avoir aucune ambiguïté dans les instructions données.
+
+Chaque donnée qui transitera entre les deux carte sera défini comme suit :
+
+	Instruction | Donnée relative à l'instruction
+	
+####Les instructions
+Habituellement, les protocoles sont définis en hexadécimal. Afin que le projet reste lisible, on foncionnera par mots clés de 3 caractères.
+#####log
+*Instruction d'identification* Cette instruction est suivit de l'id du badge nfc qui sert à s'identifier. Par exemple
+
+	log426422
+
+#####prj
+*Instruction de projet* Permet d'identifier sur quel projet on travail. Que ce soit un nouveau projet ou non. Cette instruction est suivit de l'id du badge nfc qui sert à identifier le projet. Par exemple
+
+	prj133789
+
+#####btn
+Cette instruction signifie que l'on a appuyé sur un des boutons de navigation. Elle est suivit d'une seconde instruction
+* **can** Annuler
+* **top** Flèche du haut
+* **bot** Flèche du bas
+* **val** Valider
+
+Ainsi, quand l'utilisateur cliquera sur le bouton annuler, la carte Arduino envera
+
+	btncan
+	
+#####shr
+Cette instruction signifie que l'on a appuyé sur *share*. Elle est suivit des instructions des plateformes sur lesquels l'utilisateur souhaite partager
+
+* **twi** pour twitter
+* **fac** pour facebook
+
+Ainsi, si quelqu'un a choisit de partager le projet sur twitter mais pas sur facebook, on obtient
+
+	shrtwi
+	
+Rien n'empèche de ne pas spécifier de site de partage. Par défaut, le projet est envoyé sur le serveur commun à tous les projets et sur la wordpress du faclab. Cela permet d'avoir un lien à partager.
+
+
 
 
 ##Raspberry Pi

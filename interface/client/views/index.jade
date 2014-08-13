@@ -1,0 +1,20 @@
+extends layout
+
+block content
+	#wrapper
+		header
+			h1 Documathon
+			aside V0.1
+		main
+			include ./login.jade
+		footer
+			p 
+				| this is the start of the para  
+				a(href='http://www.faclab.org') Faclab
+				|  par
+				a(href='http://www.tgrange.com') Tatiana Grange
+	script(src="/javascripts/scripts.js")
+	script(type='text/javascript').
+		$('main').center();
+		var socket = io.connect('http://localhost:3000');
+		socket.on('loadDatas', function(data){changeContentBy($("main"), data);});

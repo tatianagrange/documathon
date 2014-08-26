@@ -11,10 +11,12 @@ $.fn.center = function () {
 }
 
 function changeContentBy(wrapper, data){
-	wrapper.hide( "blind", {direction: "vertical"}, 1000, callback(wrapper, data));
-}
+	//wrapper.hide("blind", {direction: "vertical"}, 1000, wrapper.html(data)).show( "blind", {direction: "vertical"}, 1000 );
+	$('main').hide("blind", {direction: "vertical"}, 1000, function(){
+   		var div = $(data).hide();
+   		$(this).replaceWith(div);
+   		div.center();
+   		$('main').show( "blind", {direction: "vertical"}, 1000);
 
-function callback(wrapper, data){
-	wrapper.html(data);
-	wrapper.show( "blind", {direction: "vertical"}, 1000 );
+	});
 }

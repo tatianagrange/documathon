@@ -62,34 +62,43 @@ var server = app.listen(3000, function() {
 
 var io = require('socket.io').listen(server);
 io.on('connection', function (socket) {
-
-    socket.on('disconnect',function(){
-        console.log("Je suis déco");
-    });
-
     //Serial port
     var serialport = require("serialport");
     var SerialPort = serialport.SerialPort;
-    try {
-        var sp = new SerialPort("/dev/tty.usbserial-A600eo9b", {
-            parser: serialport.parsers.readline("\n"),
-            baudrate: 9600
-        });
 
-        sp.on("open", function(){
-            sp.on('data', function(data){
-                var html = '<p>Not Found</p>';
-                if(data == 0x0100){
-                    html = jade.renderFile('views/login.jade');
-                    
-                }
-                if(data == 0x0101){
-                    html = jade.renderFile('views/project.jade', {user:"Mon user"});
-                }
-                socket.emit('loadDatas', html);
-            });
-        });     
-    } catch (err) {
-        console.log("H:", err)
-    }
+    var sp = new SerialPort("/dev/tty.usbserial-A600eo9b", {
+        parser: serialport.parsers.readline("\n"),
+        baudrate: 9600
+    });
+
+
+    socket.on('disconnect',function(){
+        console.log("Client déconecté");
+        sp.close(function(){
+            console.log("SerialPort close");
+        });
+    });
+
+    
+
+    sp.on("open", function(){
+        sp.on('data', function(data){
+            console.log(data);
+            var instruction = data.substr(0, 3);
+            var html = '<p>Not Found</p>';
+            switch (instruction) {
+                case "log":
+                    var myUser = data.substr(3);
+                    html = jade.renderFile('views/project.jade', {user:myUser});
+                    break;
+                case "btn":
+                    var newInstruction = data.substr(3,3);
+                    if(newInstruction == "can"){
+                        html = jade.renderFile('views/login.jade');
+                    }
+                    break;
+            }
+            socket.emit('loadDatas', html);
+        });
+    });
 });

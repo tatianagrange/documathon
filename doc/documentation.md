@@ -109,6 +109,19 @@ On y trouve un dossier par essai.
 * Nfc : C'est le code de base qui réagit au passage d'un tag
 * Multiplexeur: Il s'agit des tests sur le multiplexeur afin de brancher sur la carte arduino le shield nfc et l'ensemble led/bouton.
 
+####V0.2
+La V0.2 du documathon utilise des boutons/led.
+
+Afin d'être utilisés correctements, plusieurs tests ont été effectué, notemment à propos des branchement. 
+
+Voici le shéma fonctionnel du composant:
+
+![Composant](../../object/arduino/LedButton.jpg)
+
+Le composant est à brancher ainsi
+
+![Composant](../../object/arduino/dessin.png)
+
 ###Protocole
 Le protocole applicatif permet de définir l’organisation des données envoyées entre la carte Arduino et le Raspberry Pi. Il est très important que ce protocole soit clairement défini afin qu’il ne puisse y avoir aucune ambiguïté dans les instructions données.
 

@@ -16,12 +16,18 @@ Sur les planches de la boîte, on a rajouté des trous pour les sorties suivante
 
 Il y a également la place sur la planche du dessus pour les quatres leds et les six boutons.
 
+![V0.1 du documathon - exterrieur](http://goo.gl/xyPW8W)
+
+
 #####L'intérrieur
 La raspberry Pie et le hub usb sont maintenues par des cales triangulaires. Il est possible de retirer les deux modules facilement.
 
 Les 3 gros boutons sont soudés sur des plaques de plexiglasse, eux même maintenus à la plaque du dessus.
 
 On trouve également dans la boîte la carte arduino, la carte nfc, deux breadbord et beaucoup de fils. Tout cela n'est pas maintenu pour l'instant.
+
+![V0.1 du documathon - intérrieur](http://goo.gl/28NxT6)
+![V0.1 du documathon - intérrieur - Carte](http://goo.gl/tpgVMo)
 
 
 ####A prendre en compte pour la V1
@@ -39,3 +45,10 @@ Le matériel suivant a été commandé pour réaliser une meilleur boite
 * Une grande breadboard, pour pouvoir faire tous les branchements au même endroit.
 * Plusieurs puces RFID, au format carte et tag.
 * Des fils pour relier le bouton à la carte.
+
+###V0.2
+
+####Test
+Voici un test du système d'attache des boutons/leds sur du Plexi Blanc de 3mm:
+![V0.2 - Bouton](http://goo.gl/Jq5Ooa) 
+![V0.2 - Bouton](http://goo.gl/GaooIX) 

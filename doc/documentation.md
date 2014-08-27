@@ -62,12 +62,18 @@ Sur les planches de la boîte, on a rajouté des trous pour les sorties suivante
 
 Il y a également la place sur la planche du dessus pour les quatres leds et les six boutons.
 
+![V0.1 du documathon - exterrieur](http://goo.gl/xyPW8W)
+
+
 #####L'intérrieur
 La raspberry Pie et le hub usb sont maintenues par des cales triangulaires. Il est possible de retirer les deux modules facilement.
 
 Les 3 gros boutons sont soudés sur des plaques de plexiglasse, eux même maintenus à la plaque du dessus.
 
 On trouve également dans la boîte la carte arduino, la carte nfc, deux breadbord et beaucoup de fils. Tout cela n'est pas maintenu pour l'instant.
+
+![V0.1 du documathon - intérrieur](http://goo.gl/28NxT6)
+![V0.1 du documathon - intérrieur - Carte](http://goo.gl/tpgVMo)
 
 
 ####A prendre en compte pour la V1
@@ -86,6 +92,14 @@ Le matériel suivant a été commandé pour réaliser une meilleur boite
 * Plusieurs puces RFID, au format carte et tag.
 * Des fils pour relier le bouton à la carte.
 
+###V0.2
+
+####Test
+Voici un test du système d'attache des boutons/leds sur du Plexi Blanc de 3mm:
+![V0.2 - Bouton](http://goo.gl/Jq5Ooa) 
+![V0.2 - Bouton](http://goo.gl/GaooIX) 
+
+
 ##La boîte
 Les fichiers de ce dossier son préfixé par la version de la boîte dessinée.
 ###V0.1
@@ -98,7 +112,7 @@ Les fichiers de ce dossier son préfixé par la version de la boîte dessinée.
 Il y a plusieurs dossiers dans ce dossier.
 
 * **searchs** contient toutes les recherches sur le code Arduino. 
-* **src** contient le projet en lui même
+* **documathon** le code source arduino du documathon.
 
 ###Les recherches
 Pour arrivé au premier prototype, il faut tester plusieurs fonctionnalités. D'où la nécessité de garder une trace de ces essais, que l'on regroupe dans le dossier *recherche*
@@ -106,21 +120,54 @@ Pour arrivé au premier prototype, il faut tester plusieurs fonctionnalités. D'
 On y trouve un dossier par essai.
 
 * Box : Il s'agit de l'essai permettant de faire clignotter les leds à l'appui sur les boutons
-* Nfc : C'est le code de base qui réagit au passage d'un tag
+* Nfc : C'est le code de base qui réagit au passage d'un tag, avec une carte [PN512  Adafruit](https://learn.adafruit.com/adafruit-pn532-rfid-nfc)
 * Multiplexeur: Il s'agit des tests sur le multiplexeur afin de brancher sur la carte arduino le shield nfc et l'ensemble led/bouton.
+* NfcSmall : La carte [Adafruit](https://learn.adafruit.com/adafruit-pn532-rfid-nfc) utilisée pour le test NFC avait une trop longue portée et la façon de la branchée n'était pas propre. NfcSmall utilise une autre carte, [Seeed](http://cgi.ebay.fr/ws/eBayISAPI.dll?ViewItem&item=190822896368), et d'autres librairies.
 
-####V0.2
+####Les leds
 La V0.2 du documathon utilise des boutons/led.
 
 Afin d'être utilisés correctements, plusieurs tests ont été effectué, notemment à propos des branchement. 
 
 Voici le shéma fonctionnel du composant:
 
-![Composant](../../object/arduino/LedButton.jpg)
+![Composant](http://goo.gl/9auw1K)
 
 Le composant est à brancher ainsi
 
-![Composant](../../object/arduino/dessin.png)
+![Composant](http://goo.gl/KQTnf8)
+
+###Projet Documathon (V0.2)
+
+####Prérequis
+Les librairies suivantes doivent être installée pour que le code fonctionne:
+
+* [PN532](https://github.com/Seeed-Studio/PN532)
+* [NDEF](https://github.com/don/NDEF)
+
+Pour installer ces librairies, il faut télécharger le zip sur github, puis ajouter les dossiers dans le dossier *Arduino/libraries* 
+
+Le matériel suivant est utilisé:
+
+* Des boutons/led, achetés sur [Adafruit](https://www.adafruit.com/products/481)
+* Une crate Arduino Uno
+* Une carte PN532 NFC RFID Reader/Writer Module Seeed, achetée sur [ebay](http://cgi.ebay.fr/ws/eBayISAPI.dll?ViewItem&item=190822896368)
+* Cinq boutons
+* 7 résistances
+
+![Montage](http://goo.gl/KsdmrO)
+
+####Les classes
+Deux classes ont été créé pour clarifier le code. 
+
+* **SwitchButton**, qui permet de récupérer l'état *HIGHT* d'un bouton une seule fois, peut importe le temps où l'on reste appuyé.
+* **LedButton**, qui hérite de **SwitchButton**. Celle classe permet de spécifier une led à allumer pour marquer un fonctionnement on/off.
+
+Le header **Protocol.h** permet simplement de stocker les définition du protocol.
+
+####Détails
+Il n'y a pour l'instant aucune différenciation entre les tag de login et les tag de projets. Pour cela, il faut encoder les tag (NDEF sur du Mifare Classic tag)
+
 
 ###Protocole
 Le protocole applicatif permet de définir l’organisation des données envoyées entre la carte Arduino et le Raspberry Pi. Il est très important que ce protocole soit clairement défini afin qu’il ne puisse y avoir aucune ambiguïté dans les instructions données.

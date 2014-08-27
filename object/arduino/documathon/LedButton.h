@@ -2,16 +2,12 @@
 #define LedButton_h
 
 #include <Arduino.h>
+#include "SwitchButton.h"
 
-class LedButton
+class LedButton: public SwitchButton
 {
 private:
     int _ledPin;
-    int _btnPin;
-    int _state;
-    int _previous;
-    unsigned long _time;
-    long _debounce;
     
 public:
     LedButton(int led, int btn);

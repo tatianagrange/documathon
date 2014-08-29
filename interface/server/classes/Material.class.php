@@ -33,32 +33,31 @@
 
 
 /**
- * Author
+ * Material
  *
- * This class define an author like it can use on the Server
+ * This class define a material like it can use on the Server
  *
  * @author  Tatiana Grange
- * @since   0.1
+ * @since   0.2
  */
-class Author {
+class Material {
 	/***************
     *  Attributes  *
     ****************/
     public $id;
     public $name;
-    public $birth;
+    public $width;
+    public $length;
+    public $thickness;
 
     /****************
     *  Constructor  *
     *****************/
 	public function __construct(){
     	$this->id = intval($this->id);
-    	
-        if($this->birth != null){
-            $format = 'Y-m-d H:i:s';
-            $date = DateTime::createFromFormat($format, $this->birth);
-            $this->birth = $date->getTimestamp();
-        }
+    	$this->width = floatval($this->width);
+    	$this->length = floatval($this->length);
+    	$this->thickness = floatval($this->thickness);
     }
 
 
@@ -81,29 +80,33 @@ class Author {
     	$this->name = $name;
     }
 
-    public function getBirth(){
-        return $this->birth;
+    public function getWidth(){
+        return $this->width;
     }  
 
-    public function setBirth($birth){
-        $this->birth = $birth;
+    public function setWidth($width){
+        $this->width = $width;
+    }
+
+    public function getLength(){
+        return $this->length;
+    }  
+
+    public function setLength($length){
+        $this->length = $length;
+    }
+
+    public function getThickness(){
+        return $this->thickness;
+    }  
+
+    public function setThickness($thickness){
+        $this->thickness = $thickness;
     }
 
     /**************
     *  Functions  *
     ***************/
-
-    /**
-    *   This function return the object Author.
-    */
-    function getAge(){
-    	if($this->birth == null)
-    		return null;
-
-		$t = time();
-		$age = ($this->birth < 0) ? ( $t + ($this->birth * -1) ) : $t - $this->birth;
-		return floor($age/31536000);
-	}
 
 	/**
 	*	This function is used to return all project with the participation of the author

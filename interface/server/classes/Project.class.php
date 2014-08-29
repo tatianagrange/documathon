@@ -6,7 +6,7 @@
  * @copyright   2014 Tatiana Grange
  * @link        TO DO
  * @license     http://opensource.org/licenses/MIT
- * @version     0.1
+ * @version     0.2
  *
  * MIT LICENSE
  *
@@ -41,25 +41,32 @@
  * @since   0.1
  */
 
-
 class Project {
 	/***************
     *  Attributes  *
     ****************/
-    public $mId;
-    public $mDate;
-    public $mName;
+    public $id;
+    public $date;           // Date is the date of the last change
+    public $name;
 
-    public $mSteps;
-    public $mAuthors;
+    public $steps;
+
+    // @since 0.2
+    public $start;          // And Start is the date where the project is register
+    public $materials;
+    public $tools;
 
     /****************
     *  Constructor  *
     *****************/
-	public function __construct($date, $name, $id = null){
-    	$this->mId = $id;
-    	$this->mName = $name;
-        $this->mDate = $date;
+	public function __construct(){
+        //Cast values
+    	$this->id = intval($this->id);
+        $this->date = $this->datetimeStringToTimestamp($this->date);
+        $this->start = $this->datetimeStringToTimestamp($this->start);
+        $this->steps = array();
+        $this->materials = array();
+        $this->tools = array();
     }
 
 
@@ -67,54 +74,48 @@ class Project {
     *  Accessors  *
     ***************/
     public function getId(){
-        return $this->mId;
+        return $this->id;
     }  
 
     public function setId($id){
-    	$this->mId = $id;
+    	$this->id = $id;
     }
 
     public function getName(){
-        return $this->mName;
+        return $this->name;
     }  
 
     public function setName($name){
-    	$this->mName = $name;
+    	$this->name = $name;
     }
 
     public function getDate(){
-        return $this->mDate;
+        return $this->date;
     }  
 
     public function setDate($date){
-        $this->mDate = $date;
+        $this->date = $date;
     }
 
-    /**************
-    *  Functions  *
-    ***************/
+    public function getStart(){
+        return $this->start;
+    }  
 
-	/**
-	*	This function is used to return all authors who documented the project
-	*/
-	function requestForAuthors(){
-		if($this->mAuthors == null){
-            //Make request
-            $this->mAuthors = array();
-        }
+    public function setBirth($start){
+        $this->start = $start;
+    }
 
-        return $this->mAuthors;
-	}
+    /**********************
+    *  Private Functions  *
+    ***********************/
 
     /**
-    *   This function is used to return all authors who documented the project
+    *   
     */
-    function requestForSteps(){
-        if($this->mSteps == null){
-            //Make request
-            $this->mSteps = array();
-        }
-
-        return $this->mSteps;
+    private function datetimeStringToTimestamp($datetime){
+        $format = 'Y-m-d H:i:s';
+        $date = DateTime::createFromFormat($format, $datetime);
+        return $date->getTimestamp();
     }
+
 }

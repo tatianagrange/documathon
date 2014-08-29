@@ -6,7 +6,7 @@
  * @copyright   2014 Tatiana Grange
  * @link        TO DO
  * @license     http://opensource.org/licenses/MIT
- * @version     0.1
+ * @version     0.2
  *
  * MIT LICENSE
  *
@@ -40,11 +40,18 @@
  */
 class Response {
 
+    /***************
+    *  Attributes  *
+    ****************/
     public $datas;
     public $status;
     public $error;
     public $msg;
 
+
+    /****************
+    *  Constructor  *
+    *****************/
 	public function __construct($mDatas, $mStatus = 200, $mError = false){
     	$this->datas = $mDatas;
     	$this->status = $mStatus;
@@ -57,6 +64,9 @@ class Response {
     	}
     }
 
+    /**************
+    *  Accessors  *
+    ***************/
     public function getDatas(){
         return $this->datas;
     }

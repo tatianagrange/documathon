@@ -20,7 +20,19 @@ Cette route affiche tous les projets dans datas
 ###/projects/:id
 Cette route retourne un projet en particulier. Id est l'identifiant du projet en base.
 
-###/projects/date/:date
+###/projects/filter/date/:date
+Cette route retourne tous les projets qui ont été mis à jour après la date indiquée
+
+###/projects/filter/start/:date
+Cette route retourne tous les projets qui ont été commencé après la date indiquée
+
+###/projects/filter/author/:id
+Cette route retourne tous auxquel l'auteur a participé
+
+###/projects/filter/material/:date
+Cette route retourne tous les projets après la date indiquée
+
+###/projects/filter/tool/:date
 Cette route retourne tous les projets après la date indiquée
 
 ###/projects/create/:folderName
@@ -40,6 +52,22 @@ La route retourn le json suivant:
 		"error": true,
 		"msg": "ERROR | This is not the correct use of this route. Please use this"
 	}
+	
+####projects/filter
+Cette route ne donne rien, mais indique à l'utilisateur les différents filtres possibles. Il retourne une erreur de type *4205*
+
+	{
+		"datas": {
+			"/projects/filter/date/:date": "Get the projects update after the date in timestamp",
+			"/projects/filter/start/:date": "Get the projects start after the date in timestamp",
+			"/projects/filter/author/:id": "Get the projects on which the author participated.",
+			"/projects/filter/material/:id": "Get the projects on which use the material.",
+			"/projects/filter/tool/:id": "Get the projects on which use the tool."
+		},
+		"status": 4205,
+		"error": true,
+		"msg": "ERROR | This is not the correct use of this route."
+	}
 
 ####Not Found
 Si la route n'existe pas, elle renvoie un json de status *404*:
@@ -48,8 +76,13 @@ Si la route n'existe pas, elle renvoie un json de status *404*:
 		"datas": {
 			"/projects": "Show all projects",
 			"/projects/:id": "Show One project",
-			"/projects/create/:folderName": "Create a new project in database, with de folder pass in argument"
-			"/projects/date/:date": "Return all project after the date pass in argument"
+			"/projects/create/:folderName": "Create a new project in database, with de folder pass in argument",
+			"/projects/filter": "Get all route with filter for projects",
+			"/projects/filter/date/:date": "Get the projects update after the date in timestamp",
+			"/projects/filter/start/:date": "Get the projects start after the date in timestamp",
+			"/projects/filter/author/:id": "Get the projects on which the author participated.",
+			"/projects/filter/material/:id": "Get the projects on which use the material.",
+			"/projects/filter/tool/:id": "Get the projects on which use the tool."
 		},
 		"status": 404,
 		"error": true,
@@ -57,11 +90,13 @@ Si la route n'existe pas, elle renvoie un json de status *404*:
 	}
 
 ###Listing des status
-* **200** : Tout est bon
-* **404** : La route n'existe pas
-* **4201**: Il manque le nom du dossier permettant la création d'un projet
+* **200** : Tout est bon.
+* **404** : La route n'existe pas.
+* **4201**: Il manque le nom du dossier permettant la création d'un projet.
 * **4202**: Aucun projet ne possède l'id demandé.
 * **4203**: Aucun projet n'a été enrengistré depuis la date indiquée.
+* **4204**: Le format de la date nest pas valide.
+* **4205**: Affichage des filtres possibles pour les projets
 
 ###Technologie
 L'API est basée sur le micro-framework **Slim Framework**

@@ -33,32 +33,25 @@
 
 
 /**
- * Author
+ * Tool
  *
- * This class define an author like it can use on the Server
+ * This class define a tool like it can use on the Server
  *
  * @author  Tatiana Grange
- * @since   0.1
+ * @since   0.2
  */
-class Author {
+class Tool {
 	/***************
     *  Attributes  *
     ****************/
     public $id;
     public $name;
-    public $birth;
 
     /****************
     *  Constructor  *
     *****************/
 	public function __construct(){
     	$this->id = intval($this->id);
-    	
-        if($this->birth != null){
-            $format = 'Y-m-d H:i:s';
-            $date = DateTime::createFromFormat($format, $this->birth);
-            $this->birth = $date->getTimestamp();
-        }
     }
 
 
@@ -81,29 +74,9 @@ class Author {
     	$this->name = $name;
     }
 
-    public function getBirth(){
-        return $this->birth;
-    }  
-
-    public function setBirth($birth){
-        $this->birth = $birth;
-    }
-
     /**************
     *  Functions  *
     ***************/
-
-    /**
-    *   This function return the object Author.
-    */
-    function getAge(){
-    	if($this->birth == null)
-    		return null;
-
-		$t = time();
-		$age = ($this->birth < 0) ? ( $t + ($this->birth * -1) ) : $t - $this->birth;
-		return floor($age/31536000);
-	}
 
 	/**
 	*	This function is used to return all project with the participation of the author

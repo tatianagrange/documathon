@@ -6,7 +6,7 @@
  * @copyright   2014 Tatiana Grange
  * @link        TO DO
  * @license     http://opensource.org/licenses/MIT
- * @version     0.1
+ * @version     0.2
  *
  * MIT LICENSE
  *
@@ -45,24 +45,22 @@ class Step {
     /***************
     *  Attributes  *
     ****************/
-    public $mId;
-    public $mPath;
-    public $mAuthorId;
-    public $mText;
-    public $mProjectId;
+    public $id;
+    public $path;
+    public $text;
+    public $projectId;
 
-    public $mAuthor;
+    public $authors;
 
 
     /****************
     *  Constructor  *
     *****************/
-	public function __construct($path, $projectId, $text = null, $authorId = null, $id = null){
-        $this->mId = $id;
-    	$this->mPath = $path;
-    	$this->mAuthorId = $authorId;
-        $this->mText = $text;
-        $this->mProjectId = $projectId;
+	public function __construct(){
+        //Cast values
+        $this->id = intval($this->id);
+        $this->projectId = intval($this->projectId);
+        $this->authors = array();
     }
 
 
@@ -70,60 +68,35 @@ class Step {
     *  Accessors  *
     ***************/
     public function getId(){
-        return $this->mId;
+        return $this->id;
     }
 
     public function setId($id){
-        return $this->mId = $id;
+        return $this->id = $id;
     }
 
     public function getPath(){
-        return $this->mPath;
+        return $this->path;
     }  
 
     public function setPath($path){
-    	$this->mPath = $path;
-    }
-
-    public function getAuthorId(){
-        return $this->mAuthorId;
-    }  
-
-    public function setAuthorId($authorId){
-    	$this->mAuthorId = $authorId;
+    	$this->path = $path;
     }
 
     public function getText(){
-        return $this->mText;
+        return $this->text;
     }  
 
     public function setText($text){
-        $this->mText = $text;
+        $this->text = $text;
     }
 
     public function getProjectId(){
-        return $this->mProjectId;
+        return $this->projectId;
     }  
 
     public function setProjectId($projectId){
-        $this->mProjectId = $projectId;
-    }
-
-
-    /**************
-    *  Functions  *
-    ***************/
-
-    /**
-    *   This function return the object Author.
-    */
-    public function requestForAuthor(){
-        if($this->mAuthor == null){
-            //Make request
-            $this->mAuthor = null;
-        }
-
-        return $this->mAuthor;
+        $this->projectId = $projectId;
     }
 }
 ?>

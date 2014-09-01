@@ -187,6 +187,14 @@ Habituellement, les protocoles sont définis en hexadécimal. Afin que le projet
 *Instruction de projet* Permet d'identifier sur quel projet on travail. Que ce soit un nouveau projet ou non. Cette instruction est suivit de l'id du badge nfc qui sert à identifier le projet. Par exemple
 
 	prj133789
+	
+#####too
+*Instruction d'outils* Permet d'identifier un outils utilisé sur le projet.
+
+#####mat
+*Instruction de matéreil* Permet de renseigner un type de matériaux utilisé sur le projet.
+
+> Attention! Les instructions **log**, **prj**, **too** et **mat** sont encodés directement sur les tags que l'on passe sur arduino.
 
 #####btn
 Cette instruction signifie que l'on a appuyé sur un des boutons de navigation. Elle est suivit d'une seconde instruction

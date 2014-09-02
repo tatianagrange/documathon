@@ -49,7 +49,7 @@ ENGINE = InnoDB;
 -- Contenu de la table `Project`
 --
 
-INSERT INTO `Project` (`id`,`lang`, `name`, `date`, `start`) VALUES
+INSERT INTO `Project` (`id`, `name`, `lang`, `date`, `start`) VALUES
 (1, 'Enceintes', 'fr', '2014-07-12 18:45:00', '2014-02-12 00:00:00'),
 (2, 'Mandala', 'fr', '2014-06-10 14:07:00', '2014-02-12 00:00:00');
 

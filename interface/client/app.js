@@ -66,7 +66,7 @@ io.on('connection', function (socket) {
     var serialport = require("serialport");
     var SerialPort = serialport.SerialPort;
 
-    var sp = new SerialPort("/dev/tty.usbserial-A600eo9b", {
+    var sp = new SerialPort("/dev/tty.usbmodem1421", {
         parser: serialport.parsers.readline("\n"),
         baudrate: 9600
     });
@@ -91,7 +91,7 @@ io.on('connection', function (socket) {
                     var myUser = data.substr(3);
                     html = jade.renderFile('views/project.jade', {user:myUser});
                     break;
-                case "btn":
+                case "prj":
                     var newInstruction = data.substr(3,3);
                     if(newInstruction == "can"){
                         html = jade.renderFile('views/login.jade');

@@ -39,6 +39,7 @@ INSERT INTO `Author` (`id`, `name`, `birth`) VALUES
 CREATE TABLE IF NOT EXISTS `documathon`.`Project` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL DEFAULT NULL,
+  `lang` VARCHAR(45) NULL DEFAULT NULL,
   `date` DATETIME NOT NULL,
   `start` DATETIME NOT NULL,
   PRIMARY KEY (`id`))
@@ -48,9 +49,9 @@ ENGINE = InnoDB;
 -- Contenu de la table `Project`
 --
 
-INSERT INTO `Project` (`id`, `name`, `date`, `start`) VALUES
-(1, 'Enceintes', '2014-07-12 18:45:00', '2014-02-12 00:00:00'),
-(2, 'Mandala', '2014-06-10 14:07:00', '2014-02-12 00:00:00');
+INSERT INTO `Project` (`id`,`lang`, `name`, `date`, `start`) VALUES
+(1, 'Enceintes', 'fr', '2014-07-12 18:45:00', '2014-02-12 00:00:00'),
+(2, 'Mandala', 'fr', '2014-06-10 14:07:00', '2014-02-12 00:00:00');
 
 
 -- -----------------------------------------------------

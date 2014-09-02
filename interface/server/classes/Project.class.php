@@ -48,6 +48,7 @@ class Project {
     public $id;
     public $date;           // Date is the date of the last change
     public $name;
+    public $lang;
 
     public $steps;
 

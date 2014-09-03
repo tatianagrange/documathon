@@ -104,13 +104,4 @@ class Author {
 		$age = ($this->birth < 0) ? ( $t + ($this->birth * -1) ) : $t - $this->birth;
 		return floor($age/31536000);
 	}
-
-	/**
-	*	This function is used to return all project with the participation of the author
-	*/
-	function requestForProjects(){
-		return array();
-	}
-
-	
 }

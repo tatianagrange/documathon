@@ -1,3 +1,6 @@
+/* **************************** */
+/*          All Require         */
+/* **************************** */
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -7,12 +10,30 @@ var bodyParser = require('body-parser');
 var jade = require('jade');
 var routes = require('./routes/index');
 
-var app = express();
 
-// view engine setup
+/* ************************* */
+/*          Context          */
+/* ************************* */
+var documentationSteps = ["waitLog", "waitProject", "newProject"];
+var documentationStep = 0;
+var Author = require('./classes/Author.js').Author;
+var myAuthor;
+var Project = require('./classes/Project.js').Project;
+var myProject;
+
+/* ********************* */
+/*          RTC          */
+/* ********************* */
+var static = require('node-static');
+var file = new(static.Server)();
+
+
+/* **************************** */
+/*          Define app          */
+/* **************************** */
+var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -46,6 +67,7 @@ if (app.get('env') === 'development') {
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
+    file.serve(req, res);
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,
@@ -56,9 +78,15 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
+
+/* ************************ */
+/*          Server          */
+/* ************************ */
 var server = app.listen(3000, function() {
     console.log('Listening on port %d', server.address().port);
 });
+
+
 
 var io = require('socket.io').listen(server);
 io.on('connection', function (socket) {
@@ -86,19 +114,35 @@ io.on('connection', function (socket) {
             console.log(data);
             var instruction = data.substr(0, 3);
             var html = '<p>Not Found</p>';
+            var data = data.substr(3);
+            var noChange = false;
             switch (instruction) {
                 case "log":
-                    var myUser = data.substr(3);
-                    html = jade.renderFile('views/project.jade', {user:myUser});
+                    myAuthor = new Author();
+                    var error = myAuthor.hydrateWithJson(data);
+                    if(error == 1){
+                        html = jade.renderFile('views/project.jade', {name:myAuthor.name});
+                        documentationStep = 1;
+                    }
                     break;
                 case "prj":
-                    var newInstruction = data.substr(3,3);
-                    if(newInstruction == "can"){
-                        html = jade.renderFile('views/login.jade');
+                    if(documentationStep < 1){
+                        socket.emit('notif', "Identification nécessaire pour documenter un projet");
+                        noChange = true;
+                        break;
+                    }
+                    myProject = new Project();
+                    var error = myProject.hydrateWithJson(data)
+                    if(error == 1)
+                        html = jade.renderFile('views/step.jade');
+                    else{
+                        html = jade.renderFile('views/newProject.jade');
+                        documentationStep = 2;
                     }
                     break;
             }
-            socket.emit('loadDatas', html);
+            if(!noChange)
+                socket.emit('loadDatas', html);
         });
     });
 });

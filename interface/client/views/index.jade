@@ -7,7 +7,9 @@ block content
 			aside V0.1
 		include ./login.jade
 	script(src="/javascripts/scripts.js")
+	script(src="/javascripts/notify.min.js")
 	script(type='text/javascript').
 		$('main').center();
 		var socket = io.connect('http://localhost:3000');
 		socket.on('loadDatas', function(data){changeContentBy($("main"), data);});
+		socket.on('notif', function(data){$.notify(data);});

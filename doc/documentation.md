@@ -225,7 +225,8 @@ Cette instruction envoi une **notification** à l'interface web. Elle est suivit
 * **can** relève une erreur.
 * **wri** indique qu'arduino a écrit sur le tag ce qui lui était demandé
 
-
+#####srv
+Les instruction srv servent à indiquer les instruction d'écriture allant de l'interface web vers la carte arduino.
 
 ##Raspberry Pi
 

@@ -48,7 +48,6 @@ class Project {
     public $id;
     public $date;           // Date is the date of the last change
     public $name;
-    public $lang;
 
     public $steps;
 
@@ -56,6 +55,7 @@ class Project {
     public $start;          // And Start is the date where the project is register
     public $materials;
     public $tools;
+    public $lang;
 
     /****************
     *  Constructor  *
@@ -104,6 +104,14 @@ class Project {
 
     public function setBirth($start){
         $this->start = $start;
+    }
+
+    public function getLang(){
+        return $this->lang;
+    }
+
+    public function setLang($lg){
+        $this->lang = $lg;
     }
 
     /**********************

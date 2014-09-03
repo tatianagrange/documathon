@@ -17,9 +17,6 @@ Project.prototype.hydrateWithJson = function(json){
 		var obj = JSON.parse(json);
 		this.id = obj.id;
 		this.name = obj.name;
-		this.date = obj.date;
-		this.start = obj.start;
-		this.lang = obj.lang;
 		return 1;
 	}
 	catch(e){

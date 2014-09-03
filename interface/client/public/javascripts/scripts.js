@@ -16,6 +16,5 @@ function changeContentBy(wrapper, data){
    		$(this).replaceWith(div);
    		div.center();
    		$('main').show( "blind", {direction: "vertical"}, 1000);
-
 	});
 }

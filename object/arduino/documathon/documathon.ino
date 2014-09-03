@@ -10,6 +10,9 @@
 //                Declarations                //
 ////////////////////////////////////////////////
 
+byte byteRead;
+String readString;
+
 /* ************************* */
 /*    Share declaration      */
 /* ************************* */
@@ -35,9 +38,23 @@ void setup() {
   Serial.begin(9600);
   nfc.begin(false);
   previous = false;
+  readString = "";
 }
 
 void loop() {
+  
+  while (Serial.available()) {
+    delay(3);
+    if (Serial.available() > 0) {
+      char c = Serial.read();
+      readString += c;
+    } 
+  }
+  
+  if (readString.length() >0) {
+    writeNFCTag();
+  }
+  
   twitter.switchLed();
   facebook.switchLed();
   ok.makeSwitch();
@@ -112,7 +129,6 @@ String readNfcTag(){
   return "";
 }
 
-
 String getInstruction(String route){
   String toSend = "";
   for(int i = 0 ; i < 3 ; i++){  
@@ -120,5 +136,34 @@ String getInstruction(String route){
   }
   return toSend;
 }
+
+void writeNFCTag(){
+  if (readString.substring(0,3) == "srv") {
+    String json = readString.substring(3);
+    
+    if (nfc.tagPresent(40)) {
+      bool success = nfc.erase();
+      if (!success) {
+        Serial.println(NOTIFICATION + NOT_CANCEL);
+        return;
+      }
+      
+      NdefMessage message = NdefMessage();
+      message.addTextRecord(json);
+      success = nfc.write(message);
+      readString = "";
+      if (!success) {
+        Serial.println(NOTIFICATION + NOT_CANCEL);
+      }
+      else{
+        Serial.println(NOTIFICATION + NOT_WRITE);
+      }
+    }
+  }
+  else if (readString.substring(0,3) == "bac") {
+    readString = "";
+  }
+}
+
 
 

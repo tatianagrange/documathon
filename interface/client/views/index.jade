@@ -12,4 +12,7 @@ block content
 		$('main').center();
 		var socket = io.connect('http://localhost:3000');
 		socket.on('loadDatas', function(data){changeContentBy($("main"), data);});
-		socket.on('notif', function(data){$.notify(data);});
+		socket.on('notifError', function(data){$.notify(data,"error");});
+		socket.on('notifInfo', function(data){$.notify(data,"info");});
+		socket.on('notifSuccess', function(data){$.notify(data,"success");});
+		socket.on('getField', function(field){socket.emit('returnField', $('#'+field).val());});

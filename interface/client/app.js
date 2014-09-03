@@ -16,6 +16,7 @@ var routes = require('./routes/index');
 /* ************************* */
 var documentationSteps = ["waitLog", "waitProject", "newProject"];
 var documentationStep = 0;
+var writing = false;
 var Author = require('./classes/Author.js').Author;
 var myAuthor;
 var Project = require('./classes/Project.js').Project;
@@ -107,7 +108,14 @@ io.on('connection', function (socket) {
         });
     });
 
-    
+    socket.on('returnField',function(field){
+        if(documentationStep == 2){
+            socket.emit('notifInfo', "Présenter à nouveau le tag");
+            writing = true;
+            writeAndDrain('srvprj{"id": 1,"name": "' + field + '"}\n', function(){});
+        }
+    });
+
 
     sp.on("open", function(){
         sp.on('data', function(data){
@@ -115,24 +123,42 @@ io.on('connection', function (socket) {
             var instruction = data.substr(0, 3);
             var html = '<p>Not Found</p>';
             var data = data.substr(3);
-            var noChange = false;
+            var change = false;
+
             switch (instruction) {
+                case "not":
+                    instruction = data.substr(0, 3);
+                    switch(instruction){
+                        case "can":
+                            socket.emit('notifError', "Erreur d'écriture");
+                            break;
+                        case "wri":
+                            socket.emit('notifSuccess', "Le tag est bien enrengistré");
+                            writing = false;
+                            break;
+                    }
+                    break;
                 case "log":
+                    if(writing)
+                        break;
                     myAuthor = new Author();
                     var error = myAuthor.hydrateWithJson(data);
                     if(error == 1){
+                        change = true;
                         html = jade.renderFile('views/project.jade', {name:myAuthor.name});
                         documentationStep = 1;
                     }
                     break;
                 case "prj":
+                    if(writing)
+                        break;
                     if(documentationStep < 1){
-                        socket.emit('notif', "Identification nécessaire pour documenter un projet");
-                        noChange = true;
+                        socket.emit('notifError', "Identification nécessaire pour documenter un projet");
                         break;
                     }
                     myProject = new Project();
                     var error = myProject.hydrateWithJson(data)
+                    change = true;
                     if(error == 1)
                         html = jade.renderFile('views/step.jade');
                     else{
@@ -140,9 +166,28 @@ io.on('connection', function (socket) {
                         documentationStep = 2;
                     }
                     break;
+                case "btn":
+                    if(writing)
+                        break;
+                    instruction = data.substr(0, 3);
+                    if(instruction == "val"){
+                        switch(documentationStep){
+                            case 2:
+                                socket.emit('getField', "name");
+                                break;
+                        }
+                    }
+                    break;
             }
-            if(!noChange)
+
+            if(change)
                 socket.emit('loadDatas', html);
         });
     });
+
+    function writeAndDrain (data, callback) {
+        sp.write(data, function () {
+            sp.drain(callback);
+        });
+    }
 });

@@ -10,5 +10,8 @@
 #define SHARE             "shr"
 #define TWITTER           "twi"
 #define FACEBOOK          "fac"
+#define NOTIFICATION      String("not")
+#define NOT_WRITE         String("wri")
+#define NOT_CANCEL        String("can")
 
 #endif

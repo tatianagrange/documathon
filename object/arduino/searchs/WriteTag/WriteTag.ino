@@ -35,7 +35,7 @@ void loop() {
         
         
         NdefMessage message = NdefMessage();
-        message.addTextRecord("log{\"id\": 1,\"name\": \"Tatiana\",\"birth\": null}");
+        message.addTextRecord("prj");
         success = nfc.write(message);
         if (success) {
           Serial.println("Success. Try reading this tag with your phone.");        

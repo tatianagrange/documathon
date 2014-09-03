@@ -219,6 +219,11 @@ Ainsi, si quelqu'un a choisit de partager le projet sur twitter mais pas sur fac
 	
 Rien n'empèche de ne pas spécifier de site de partage. Par défaut, le projet est envoyé sur le serveur commun à tous les projets et sur la wordpress du faclab. Cela permet d'avoir un lien à partager.
 
+#####not
+Cette instruction envoi une **notification** à l'interface web. Elle est suivit de la nature de la notification
+
+* **can** relève une erreur.
+* **wri** indique qu'arduino a écrit sur le tag ce qui lui était demandé
 
 
 

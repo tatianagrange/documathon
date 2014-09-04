@@ -10,6 +10,18 @@ $.fn.center = function () {
 	return this;
 }
 
+$.fn.onTop = function(){
+	this.css("top", "100px");
+}
+
+function hideTitle(isHide){
+	if(isHide){
+		$('header').hide("blind", {direction: "vertical"}, 1000);
+	}else{
+		$('header').show( "blind", {direction: "vertical"}, 1000);
+	}
+}
+
 function changeContentBy(wrapper, data){
 	$('main').hide("blind", {direction: "vertical"}, 1000, function(){
    		var div = $(data).hide();
@@ -17,4 +29,16 @@ function changeContentBy(wrapper, data){
    		div.center();
    		$('main').show( "blind", {direction: "vertical"}, 1000);
 	});
+}
+
+function successCallback(stream) {
+	window.stream = stream; // stream available to console
+	var video = document.querySelector("video");
+	video.src = window.URL.createObjectURL(stream);
+	video.play();
+	$('main').onTop();
+}
+
+function errorCallback(error){
+	console.log("getUserMedia error: ", error);
 }

@@ -85,7 +85,7 @@ io.on('connection', function (socket) {
     serialProto = new SerialProtocol(socket,jade);
     serialProto.sp.on("open", function(){
         serialProto.sp.on('data', function(data){
-            serialProto.openSerial(data);
+            serialProto.startProtocol(data);
         });
     });
     

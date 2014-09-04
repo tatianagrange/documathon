@@ -8,11 +8,13 @@ block content
 		include ./login.jade
 	script(src="/javascripts/scripts.js")
 	script(src="/javascripts/notify.min.js")
+	script(src='/javascripts/adapter.js')
 	script(type='text/javascript').
 		$('main').center();
-		var socket = io.connect('http://localhost:3000');
 		socket.on('loadDatas', function(data){changeContentBy($("main"), data);});
 		socket.on('notifError', function(data){$.notify(data,"error");});
 		socket.on('notifInfo', function(data){$.notify(data,"info");});
 		socket.on('notifSuccess', function(data){$.notify(data,"success");});
+		socket.on('notifWarning', function(data){$.notify(data,"warn");});
 		socket.on('getField', function(field){socket.emit('returnField', $('#'+field).val());});
+		socket.on('startCam', function(){hideTitle(true);var constraints = {video: true};getUserMedia(constraints, successCallback, errorCallback);});

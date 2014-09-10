@@ -19,8 +19,8 @@ String readString;
 LedButton twitter(2,8);
 LedButton facebook(3,9);
 SwitchButton ok(10);
-SwitchButton down(11);
-SwitchButton up(12);
+SwitchButton down(12);
+SwitchButton up(11);
 SwitchButton cancel(13);
 SwitchButton share(7);
 

@@ -1,9 +1,8 @@
 main
 	video
 	canvas(style="display:none;")
-	img(src="")
+	img
 	p Appuie sur le bouton <strong>valider</strong> pour prendre la photo.
 	script(type='text/javascript').
-		var video = document.querySelector('video');var canvas = document.querySelector('canvas');var ctx = canvas.getContext('2d');
-		function snapshot() {$('img').css("height", $('video').height() + "px");$('img').css("width", $('video').width() + "px");$('video').hide("blind", {direction: "vertical"}, 1000);ctx.drawImage(video, 0, 0);document.querySelector('img').src = canvas.toDataURL('image/webp');}
-		video.addEventListener('click', snapshot, false);
+		var video = document.querySelector('video');
+		video.addEventListener('canplay', function(ev){ }, false);

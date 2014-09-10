@@ -11,18 +11,8 @@ var SerialPort = serialport.SerialPort;
 var socket;
 var sp;
 var jade;
-
-
-/* ************************* */
-/*          Context          */
-/* ************************* */
-var documentationSteps = ["waitLog", "waitProject", "newProject", "step"];
-var documentationStep;
-var writing;
-var Author = require('./Author.js').Author;
-var myAuthor;
-var Project = require('./Project.js').Project;
-var myProject;
+var Context = require('./Context.js').Context;
+var myContext;
 
 
 /* ***************************** */
@@ -38,8 +28,7 @@ exports.SerialProtocol = SerialProtocol = function(socket, jade) {
     //////////////////////////////////
 	this.socket = socket;
     this.jade = jade;
-    this.documentationStep = 0;
-    this.writing = false;
+    this.myContext = new Context();
 
     /////////////////////////////////////////
     //          SerialPort Config          //
@@ -120,53 +109,51 @@ SerialProtocol.prototype.instructionNotififaction = function(data){
             break;
         case "wri":
             this.emitSuccess("Le tag est bien enrengistré");
-            this.writing = false;
+            this.myContext.writing = false;
             break;
     }
     return null;
 }
 
 SerialProtocol.prototype.instructionLogin = function(data){
-    if(this.writing)
+    if(this.myContext.writing)
         return null;
 
     var html = null;
-    this.myAuthor = new Author();
-    var error = this.myAuthor.hydrateWithJson(data);
+    var error = this.myContext.makeAuthor(data);
     if(error == 1){
-        html = this.jade.renderFile('views/project.jade', {name:this.myAuthor.name});
-        this.documentationStep = 1;
+        html = this.jade.renderFile('views/project.jade', {name:this.myContext.myAuthor.name});
+        this.myContext.documentationStep = 1;
     }
 
     return html;
 }
 
 SerialProtocol.prototype.instructionProject = function(data){
-    if(this.writing)
+    if(this.myContext.writing)
         return null;
-    if(this.documentationStep < 1){
+    if(this.myContext.documentationStep < 1){
         this.socket.emit('notifError', "Identification nécessaire pour documenter un projet");
         return null;
     }
 
     var html = null;
-    this.myProject = new Project();
-    var error = this.myProject.hydrateWithJson(data)
+    var error = this.myContext.makeProject(data);
     if(error == 1){
         this.socket.emit('startCam');
         html = this.jade.renderFile('views/stepCam.jade');
-        this.documentationStep = 3;
+        this.myContext.documentationStep = 3;
     }
     else{
         html = this.jade.renderFile('views/newProject.jade');
-        this.documentationStep = 2;
+        this.myContext.documentationStep = 2;
     }
 
     return html;
 }
 
 SerialProtocol.prototype.instructionButton = function(data){
-    if(this.writing)
+    if(this.myContext.writing)
         return null;
 
     instruction = data.substr(0, 3);
@@ -178,9 +165,13 @@ SerialProtocol.prototype.instructionButton = function(data){
 }
 
 SerialProtocol.prototype.instructionValidate = function(data){
-    switch(this.documentationStep){
+    switch(this.myContext.documentationStep){
         case 2:
             this.socket.emit('getField', "name");
+            break;
+        case 3:
+            this.myContext.documentationStep = 4;
+            this.socket.emit('takeSnapshot');
             break;
     }
 }

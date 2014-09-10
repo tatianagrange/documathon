@@ -17,4 +17,5 @@ block content
 		socket.on('notifSuccess', function(data){$.notify(data,"success");});
 		socket.on('notifWarning', function(data){$.notify(data,"warn");});
 		socket.on('getField', function(field){socket.emit('returnField', $('#'+field).val());});
-		socket.on('startCam', function(){hideTitle(true);var constraints = {video: true};getUserMedia(constraints, successCallback, errorCallback);});
+		socket.on('startCam', function(){hideTitle(true);startCamAfterWait(2000)});
+		socket.on('takeSnapshot', function(){var base64 = snapshot();socket.emit('saveImage', base64);});

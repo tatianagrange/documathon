@@ -9,6 +9,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var jade = require('jade');
 var routes = require('./routes/index');
+var fs = require('fs');
+var mkdirp = require('mkdirp');
+
 
 /* ************************** */
 /*          Protocol          */
@@ -99,10 +102,31 @@ io.on('connection', function (socket) {
     socket.on('returnField',function(field){
         if(serialProto.documentationStep == 2){
             serialProto.emitInfo("Présenter à nouveau le tag");
-            serialProto.writing = true;
+            serialProto.myContext.writing = true;
             writeAndDrain('srvprj{"id": 1,"name": "' + field + '"}\n', function(){});
         }
     });
+
+    socket.on('saveImage',function(base64){
+        var imageBuffer = decodeBase64Image(base64);
+        console.log(imageBuffer);
+        
+        serialProto.emitInfo("Image sauvegardée");
+    });
+
+    function decodeBase64Image(dataString) {
+        var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
+        response = {};
+
+        if (matches.length !== 3) {
+        return new Error('Invalid input string');
+        }
+
+        response.type = matches[1];
+        response.data = new Buffer(matches[2], 'base64');
+
+        return response;
+    }
 
     function writeAndDrain (data, callback) {
         serialProto.sp.write(data, function () {

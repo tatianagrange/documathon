@@ -42,3 +42,32 @@ function successCallback(stream) {
 function errorCallback(error){
 	console.log("getUserMedia error: ", error);
 }
+
+function snapshot() {
+	var video        = $('video'),
+		canvas       = $('canvas').get(0),
+		photo        = $('img');
+		width		 = $('video').width(),
+		height		 = $('video').height();
+
+	canvas.width = width;
+	canvas.height = height;
+    $('video').hide("blind", {direction: "vertical"}, 1000);
+
+	canvas.getContext('2d').drawImage(video.get(0), 0, 0, width, height);
+	var data = canvas.toDataURL('image/png');
+	photo.get(0).setAttribute('src', data);
+    
+    //return base64 to emit socket
+    return canvas.toDataURL();
+}
+
+
+function startCamAfterWait(wait){
+	setTimeout(function()
+            { 
+            	var constraints = {video: true};
+            	getUserMedia(constraints, successCallback, errorCallback); 
+            }
+    , wait);
+}

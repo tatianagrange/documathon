@@ -70,6 +70,13 @@ SerialProtocol.prototype.startProtocol = function(data){
         case "btn":
             html = this.instructionButton(data);
             break;
+        case "mat":
+            var mats = this.instructionMaterial(data);
+            this.socket.emit('updateMat', mats);
+            break;
+        case "shr":
+            this.instructionShare(data);
+            break;
     }
 
     if(html != null)
@@ -94,6 +101,19 @@ SerialProtocol.prototype.emitError= function(data){
 
 SerialProtocol.prototype.emitSuccess= function(data){
     this.socket.emit('notifSuccess', data);
+}
+
+SerialProtocol.prototype.saveStep= function(table){
+    this.myContext.actualStep.base = table[0];
+    this.myContext.actualStep.text = table[1];
+    this.myContext.saveActualStep();
+
+    var html = this.jade.renderFile('views/stepCam.jade');
+    this.socket.emit('loadDatas', html);
+    this.socket.emit('startCam');
+
+    console.log(this.myContext.myProject);
+    this.myContext.actualStep = new Step();
 }
 
 
@@ -157,8 +177,41 @@ SerialProtocol.prototype.instructionButton = function(data){
         return null;
 
     instruction = data.substr(0, 3);
+    console.log(instruction);
     if(instruction == "val"){
         this.instructionValidate();
+    }else if(instruction == "can"){
+        this.instructionCancel();
+    }
+
+    return null;
+}
+
+SerialProtocol.prototype.instructionShare = function(data){
+    switch(this.myContext.documentationStep){
+        case 3:
+            this.emitSuccess("En cours d'envoi");
+            break;
+        default:
+            this.emitWarning("Valide ta photo et ton étape avant de partager ton projet!");
+            break;
+    }
+}
+
+SerialProtocol.prototype.instructionCancel = function(data){
+    switch(this.myContext.documentationStep){
+        case 4:
+            this.myContext.documentationStep = 3;
+            this.socket.emit('cancelSnapshot');
+            break;
+    }
+}
+
+SerialProtocol.prototype.instructionMaterial = function(data){
+    switch(this.myContext.documentationStep){
+        case 5:
+            return this.myContext.addMaterial(data);
+            break;
     }
 
     return null;
@@ -173,5 +226,27 @@ SerialProtocol.prototype.instructionValidate = function(data){
             this.myContext.documentationStep = 4;
             this.socket.emit('takeSnapshot');
             break;
+        case 4:
+            this.myContext.documentationStep = 5;
+            this.socket.emit('validateSnapshot');
+            break;
+        case 5:
+            this.myContext.documentationStep = 3;
+            this.socket.emit('validateText');
+            break;
     }
 }
+
+// function decodeBase64Image(dataString) {
+//     var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
+//     response = {};
+
+//     if (matches.length !== 3) {
+//     return new Error('Invalid input string');
+//     }
+
+//     response.type = matches[1];
+//     response.data = new Buffer(matches[2], 'base64');
+
+//     return response;
+// }

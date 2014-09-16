@@ -35,7 +35,7 @@ void loop() {
         
         
         NdefMessage message = NdefMessage();
-        message.addTextRecord("prj");
+        message.addTextRecord("mat{\"id\": 2,\"name\": \"Colle à bois\"}");
         success = nfc.write(message);
         if (success) {
           Serial.println("Success. Try reading this tag with your phone.");        

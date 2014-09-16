@@ -71,6 +71,30 @@ footer{
   height: 50pt;
 }
 
+.left {
+  float: left;
+  width: 50%;
+  height: 100%;
+}
+
+.no-icon{
+  color: #c0392b;
+}
+
+.right {
+  float: right;
+  width: 50%;
+  height: 100%;
+}
+
+.yes-icon{
+  color: #27ae60;
+}
+
+.icon-bg{
+  color: #000;
+}
+
 #form-main{
   width:100%;
   float:left;
@@ -82,7 +106,7 @@ footer{
   padding-left:35px;
   padding-right:35px;
   padding-top:35px;
-  padding-bottom:50px;
+  padding-bottom:35px;
   width: 450px;
   float: left;
   left: 50%;
@@ -111,8 +135,9 @@ footer{
   border: 3px solid rgba(0,0,0,0);
 }
 
+
 /* Icons ---------------------------------- */
-#name{
+#formId{
   background-image: url(http://rexkirby.com/kirbyandson/images/comment.svg);
   background-size: 30px 30px;
   background-position: 11px 8px;

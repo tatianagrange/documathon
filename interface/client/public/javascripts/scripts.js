@@ -10,8 +10,8 @@ $.fn.center = function () {
 	return this;
 }
 
-$.fn.onTop = function(){
-	this.css("top", "100px");
+$.fn.onTop = function(size){
+	this.css("top", size+"px");
 }
 
 function hideTitle(isHide){
@@ -36,7 +36,7 @@ function successCallback(stream) {
 	var video = document.querySelector("video");
 	video.src = window.URL.createObjectURL(stream);
 	video.play();
-	$('main').onTop();
+	$('main').onTop(100);
 }
 
 function errorCallback(error){
@@ -52,9 +52,12 @@ function snapshot() {
 
 	canvas.width = width;
 	canvas.height = height;
-    $('video').hide("blind", {direction: "vertical"}, 1000);
+
+    showPhoto(true);
 
 	canvas.getContext('2d').drawImage(video.get(0), 0, 0, width, height);
+	$('video').get(0).setAttribute('src', "");
+
 	var data = canvas.toDataURL('image/png');
 	photo.get(0).setAttribute('src', data);
     
@@ -62,6 +65,22 @@ function snapshot() {
     return canvas.toDataURL();
 }
 
+function showText(){
+	$('main').onTop(0);
+	$('#takeText').show("blind", {direction: "vertical"}, 10);
+	$('#question').hide("blind", {direction: "vertical"}, 10);
+}
+
+function showPhoto(isShowing){
+	if(isShowing == true){
+		$('#takePhoto').hide("blind", {direction: "vertical"}, 1);
+		$('#askPhoto').show("blind", {direction: "vertical"}, 1);
+	}else{
+		$('#takePhoto').show("blind", {direction: "vertical"}, 1);
+		$('#askPhoto').hide("blind", {direction: "vertical"}, 1);
+		startCamAfterWait(1);
+	}
+}
 
 function startCamAfterWait(wait){
 	setTimeout(function()

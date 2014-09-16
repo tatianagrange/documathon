@@ -1,8 +1,24 @@
 main
-	video
-	canvas(style="display:none;")
-	img
-	p Appuie sur le bouton <strong>valider</strong> pour prendre la photo.
+	div(id="takePhoto")
+		video
+		canvas(style="display:none;")
+		p(id="camText") Appuie sur le bouton <strong>valider</strong> pour prendre la photo.
+	div(id="askPhoto", style="display:none;")
+		img
+		include ./askValidate.jade
+	div(id="takeText", style="display:none;")
+		div(id="form-main")
+			div(id="form-div")
+				form(class="form",id="form1")
+					p(class="text")
+						textarea(name="text",class="validate[required,length[6,300]] feedback-input",id="formId",placeholder="Entre un texte explicatif ou passe les tags d'outils et de matériaux (Optionnel)")
+					div(class="left")
+						p
+							include ./btn_smallCancel.jade
+							| Annuler
+					div(class="right")
+						p
+							| Continuer
+							include ./btn_smallValidate.jade
 	script(type='text/javascript').
 		var video = document.querySelector('video');
-		video.addEventListener('canplay', function(ev){ }, false);

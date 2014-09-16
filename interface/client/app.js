@@ -107,26 +107,10 @@ io.on('connection', function (socket) {
         }
     });
 
-    socket.on('saveImage',function(base64){
-        var imageBuffer = decodeBase64Image(base64);
-        console.log(imageBuffer);
-        
-        serialProto.emitInfo("Image sauvegardée");
+    socket.on('saveStep',function(table){
+        serialProto.saveStep(table);
     });
 
-    function decodeBase64Image(dataString) {
-        var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
-        response = {};
-
-        if (matches.length !== 3) {
-        return new Error('Invalid input string');
-        }
-
-        response.type = matches[1];
-        response.data = new Buffer(matches[2], 'base64');
-
-        return response;
-    }
 
     function writeAndDrain (data, callback) {
         serialProto.sp.write(data, function () {

@@ -26,10 +26,10 @@ Project.prototype.hydrateWithJson = function(json){
 	}
 }
 
-Project.prototype.addSteps = function(step){
+Project.prototype.addStep = function(step){
 	if(this.steps == null){
-		this.step = new Array();
+		this.steps = new Array();
 	}
 
-	this.steps[this.steps.length] = step;
+	this.steps.push(step);
 }

@@ -103,6 +103,22 @@ function requestForAuthors($step, $connexion = null){
 		$connexion);
 }
 
+
+/* ************************** */
+/*		Save functions 		  */
+/* ************************** */
+function createProject($projectName, $connexion = null){
+	if($connexion == null)
+		$connexion = connect();
+	
+	$datetime = new DateTime();
+	$date = date("Y-m-d H:i:s", $datetime->getTimestamp());
+
+	$stmt = $connexion->prepare("INSERT INTO Project (name, start, date) VALUES ('" . $projectName . "', '" . $date . "', '" . $date . "')");
+	$stmt->execute();
+    return $connexion->lastInsertId(); 
+}
+
 /* ****************************** */
 /*		Hydrate functions 		  */
 /* ****************************** */

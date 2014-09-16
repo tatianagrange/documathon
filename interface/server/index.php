@@ -22,7 +22,7 @@
 	$app->get('/projects/create', function () {
 		//Liste all routes
 	    $tab = array();
-		$tab["/projects/create/:folderName"] = "Create a new project in database, with de folder pass in argument";
+		$tab["/projects/create/project/:projectName"] = "Create a new project in database, with de name pass in argument";
 
 		listFonctionality($tab,4201);
 	});
@@ -121,9 +121,13 @@
 	/**
 	*	Create a new project in database, with de folder pass in argument
 	*/
-	$app->get('/projects/create/:folderName', function () {
+	$app->get('/projects/create/project/:projectName', function ($projectName) {
+		
+		$id = createProject($projectName);
+
+
 		//Make a response
-		$response = new Response(42);
+		$response = new Response($id);
 		$response->addMessage("The data is the id of the project");
 
 		//Send sesponse

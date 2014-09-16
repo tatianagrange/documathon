@@ -10,7 +10,7 @@ var bodyParser = require('body-parser');
 var jade = require('jade');
 var routes = require('./routes/index');
 var fs = require('fs');
-var mkdirp = require('mkdirp');
+var request = require("request");
 
 
 /* ************************** */
@@ -100,11 +100,19 @@ io.on('connection', function (socket) {
     });
 
     socket.on('returnField',function(field){
-        if(serialProto.documentationStep == 2){
-            serialProto.emitInfo("Présenter à nouveau le tag");
-            serialProto.myContext.writing = true;
-            writeAndDrain('srvprj{"id": 1,"name": "' + field + '"}\n', function(){});
-        }
+        var url = "http://api.documathon.tgrange.com/projects/create/project/" + field;
+       
+        request({
+            url: url,
+            json: true
+        }, function (error, response, body) {
+
+            if (!error && response.statusCode === 200) {
+                serialProto.emitInfo("Présenter à nouveau le tag");
+                serialProto.myContext.writing = true;
+                writeAndDrain('srvprj{"id": ' + body.datas + ',"name": "' + field + '"}\n', function(){});
+            }
+        });
     });
 
     socket.on('saveStep',function(table){

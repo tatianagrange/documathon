@@ -220,7 +220,7 @@ SerialProtocol.prototype.instructionMaterial = function(data){
 SerialProtocol.prototype.instructionValidate = function(data){
     switch(this.myContext.documentationStep){
         case 2:
-            this.socket.emit('getField', "name");
+            this.socket.emit('getField', "formId");
             break;
         case 3:
             this.myContext.documentationStep = 4;

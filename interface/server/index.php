@@ -16,16 +16,18 @@
 	$app = new \Slim\Slim();
 	$app->response->headers->set('Content-Type', 'application/json');
 
+
 	/**
 	*	Informe the user that the route is not correct.
 	*/
-	$app->get('/projects/create', function () {
-		//Liste all routes
-	    $tab = array();
-		$tab["/projects/create/project/:projectName"] = "Create a new project in database, with de name pass in argument";
 
-		listFonctionality($tab,4201);
-	});
+	// $app->get('/projects/create', function () {
+	// 	//Liste all routes
+	//     $tab = array();
+	// 	$tab["/projects/create/:projectName"] = "Create a new project in database, with de name pass in argument";
+
+	// 	listFonctionality($tab,4201);
+	// });
 
 	$app->get('/projects/filter', function () {
 		//Liste all routes
@@ -36,7 +38,7 @@
 		$tab["/projects/filter/material/:id"] = "Get the projects on which use the material.";
 		$tab["/projects/filter/tool/:id"] = "Get the projects on which use the tool.";
 
-		listFonctionality($tab,4205);
+		Tools::listFonctionality($tab,4205);
 	});
 
 
@@ -51,7 +53,7 @@
 		$response = null;
 
 		//Check the date
-		if(!isValidTimeStamp($date) || !isCorrect($date))
+		if(!Tools::isValidTimeStamp($date) || !Tools::isCorrect($date))
 		{
 			$response = new Response(null,4204,true);
 			$response->addMessage("The date " . $date . " is not a valide timestamp");
@@ -121,7 +123,7 @@
 	/**
 	*	Create a new project in database, with de folder pass in argument
 	*/
-	$app->get('/projects/create/project/:projectName', function ($projectName) {
+	$app->get('/projects/create/:projectName', function ($projectName) {
 		
 		$id = createProject($projectName);
 
@@ -133,6 +135,36 @@
 		//Send sesponse
 		echo json_encode($response);
 	});
+
+	$app->map('/projects/:projectId/addstep/:text', function($projectId, $text) {
+    	$base =  $_POST["base64"];
+
+    	$id = createStep($projectId, $base, $text);
+    	
+		//Make a response
+		$response = new Response($id);
+		$response->addMessage("The data is the id of the project");
+
+		//Send sesponse
+		echo json_encode($response);
+	})->via('GET', 'POST');
+
+	// $app->post('/projects/:projectId/addstep/:text', function ($projectId, $text) {
+		
+
+	// 	die;
+	// 	$id = createStep($projectId, $base, $text);
+
+	// 	var_dump($id);
+	// 	die;
+
+	// 	//Make a response
+	// 	$response = new Response($id);
+	// 	$response->addMessage("The data is the id of the project");
+
+	// 	//Send sesponse
+	// 	echo json_encode($response);
+	// });
 
 
 	/**

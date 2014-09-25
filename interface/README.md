@@ -73,3 +73,6 @@ Il faut ensuite démarrer le server:
 	$ node server.js 
 	
 Puis se rendre sur l'adresse **localhost:8080**. Il ne faut pas oublier de préciser le *port* et le *baudrate*, comme dans l'exemple ci-dessus.
+
+####testingImages
+Il s'agit d'une simple petite page web permettant d'envoyer une requete de création d'étape au serveur.

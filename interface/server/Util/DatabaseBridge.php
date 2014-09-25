@@ -110,7 +110,7 @@ function requestForAuthors($step, $connexion = null){
 function createProject($projectName, $connexion = null){
 	if($connexion == null)
 		$connexion = connect();
-	
+
 	$datetime = new DateTime();
 	$date = date("Y-m-d H:i:s", $datetime->getTimestamp());
 
@@ -118,6 +118,30 @@ function createProject($projectName, $connexion = null){
 	$stmt->execute();
     return $connexion->lastInsertId(); 
 }
+
+function createStep($projectId, $base, $text, $connexion = null){
+	if($connexion == null)
+		$connexion = connect();
+
+	$path = 'images/'.$projectId;
+	if (!file_exists($path)) {
+    	mkdir($path, 0777, true);
+	}
+
+	$stmt = $connexion->prepare("INSERT INTO `Step` (`path`, `text`, `projectId`) VALUES ('test', '" . $text . "', " . $projectId . ");");
+	$stmt->execute();
+ 	$id = $connexion->lastInsertId(); 
+
+ 	$image = $path . '/' . $id . '.png';
+	Tools::base64ToJpeg($base,$image);
+
+	$addPath = $connexion->prepare("UPDATE Step SET path='" . $image . "' WHERE id=" . $id);
+	$addPath->execute();
+
+	return $id;
+	
+}
+
 
 /* ****************************** */
 /*		Hydrate functions 		  */

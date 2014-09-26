@@ -137,7 +137,8 @@
 	});
 
 	$app->map('/projects/:projectId/addstep/:text', function($projectId, $text) {
-    	$base =  $_POST["base64"];
+		$app = \Slim\Slim::getInstance();
+		$base = $app->request->post('base64');
 
     	$id = createStep($projectId, $base, $text);
     	

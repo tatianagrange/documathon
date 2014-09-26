@@ -119,6 +119,21 @@ io.on('connection', function (socket) {
         serialProto.saveStep(table);
     });
 
+    socket.on('sendImageTest',function(mBase64){
+        var mUrl = "http://api.documathon.tgrange.com/projects/1/addstep/youpi";
+        request.post(
+            mUrl,
+            { form: { 'base64': mBase64 } },
+            function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    console.log(body);
+                }else{
+                    console.log(error);
+                }
+            }
+        );
+    });
+
 
     function writeAndDrain (data, callback) {
         serialProto.sp.write(data, function () {

@@ -136,36 +136,18 @@
 		echo json_encode($response);
 	});
 
-	$app->map('/projects/:projectId/addstep/:text', function($projectId, $text) {
-		$app = \Slim\Slim::getInstance();
+    
+    $app->post('/image/:id/addStep/:text', function($id,$text) use($app){
 		$base = $app->request->post('base64');
-
-    	$id = createStep($projectId, $base, $text);
-    	
+    	$id = createStep($id, $base, $text);
+        
 		//Make a response
 		$response = new Response($id);
 		$response->addMessage("The data is the id of the project");
 
-		//Send sesponse
+		//Send response
 		echo json_encode($response);
-	})->via('GET', 'POST');
-
-	// $app->post('/projects/:projectId/addstep/:text', function ($projectId, $text) {
-		
-
-	// 	die;
-	// 	$id = createStep($projectId, $base, $text);
-
-	// 	var_dump($id);
-	// 	die;
-
-	// 	//Make a response
-	// 	$response = new Response($id);
-	// 	$response->addMessage("The data is the id of the project");
-
-	// 	//Send sesponse
-	// 	echo json_encode($response);
-	// });
+	});
 
 
 	/**

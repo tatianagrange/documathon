@@ -120,14 +120,19 @@ function createProject($projectName, $connexion = null){
 }
 
 function createStep($projectId, $base, $text, $connexion = null){
-	if($connexion == null)
+    if($connexion == null)
 		$connexion = connect();
-
+    
 	$path = 'images/'.$projectId;
-	if (!file_exists($path)) {
-    	mkdir($path, 0777, true);
-	}
-
+    if (!file_exists($path)) {
+        try{
+            mkdir($path, 0775, true);
+        }catch(Exception $e){
+            echo $e;
+            die;
+        }
+    }
+    
 	$stmt = $connexion->prepare("INSERT INTO `Step` (`path`, `text`, `projectId`) VALUES ('test', '" . $text . "', " . $projectId . ");");
 	$stmt->execute();
  	$id = $connexion->lastInsertId(); 

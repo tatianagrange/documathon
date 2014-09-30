@@ -120,7 +120,7 @@ io.on('connection', function (socket) {
     });
 
     socket.on('sendImageTest',function(mBase64){
-        var mUrl = "http://api.documathon.tgrange.com/image/10/addStep/youpiiii";
+        var mUrl = "http://api.documathon.tgrange.com/projects/10/addStep/youpiiii";
         request.post(
             mUrl,
             { form: { 'base64': mBase64 } },

@@ -137,7 +137,7 @@
 	});
 
     
-    $app->post('/image/:id/addStep/:text', function($id,$text) use($app){
+    $app->post('/projects/:id/addStep/:text', function($id,$text) use($app){
 		$base = $app->request->post('base64');
     	$id = createStep($id, $base, $text);
         

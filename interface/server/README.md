@@ -4,6 +4,53 @@ La partie serveur est la gestion de tout ce qui est en ligne.
 
 Cette partie est nomée serveur, car il permettra, à terme, de stocker au même endroit tous les projets des labs. C'est pourquoi il y a une api qui permet d'y accéder.
 
+###Configuration
+Afin de pouvoir utiliser certains scripts, il est nécessaire de réaliser quelques opération sur le serveur.
+
+####Les Vhost
+Le serveur a besoin de deux Vhost. Dans le serveur donné sur ce projet, on a accès à deux sites:
+
+* **api.documathon.tgrange.com** Ce site permet d'aller taper sur l'API décrite ci après
+* **images.documathon.tgrange.com** Ce site permet de donner un accès aux images stockées sur le servier
+
+Voici les deux vhost mis en place sur ce serveur:
+
+#####Le vhost de l'api
+	<VirtualHost *:80>
+        ServerAdmin contact@tgrange.com
+        ServerName  api.documathon.tgrange.com
+        DocumentRoot /home/tatiana/www/documathon/interface/server
+    	AddDefaultCharset utf-8
+        ServerSignature Off
+        <Directory /home/tatiana/www/documathon/interface/server>
+            Options -Indexes
+            AllowOverride All
+        </Directory>
+	</VirtualHost>
+	
+#####Le vhost des images
+	<VirtualHost *:80>
+        ServerAdmin contact@tgrange.com
+        ServerName  images.documathon.tgrange.com
+        DocumentRoot /home/tatiana/www/images
+    	AddDefaultCharset utf-8
+        ServerSignature Off
+        <Directory /home/tatiana/www/images>
+            Options -Indexes
+            AllowOverride All
+        </Directory>
+	</VirtualHost>
+
+####Les droits
+
+	sudo chown -R www-data: www/documathon/interface/server/ && sudo chmod 755 www/documathon/interface/server/
+	
+Cette ligne de commade spécifie que l'utilisateur www-data, utilisé lors de l'execution des scripts sur le server, est le propriétaire de l'interface serveur du projet. Il a également les droits 775 sur cette partie du projet.
+
+Cette commande est nécessaire pour que l'api puisse créer les dossiers manquants dans www/images. Et y enrengistrer une image.
+
+###L'api
+
 D'une manière générale, on retrouve dans chaque réponse de l'API les champs suivants:
 * **datas** Il peut s'agir de n'importe quel type de données. C'est ici que l'on récupère les données que l'on souhaitait récupérer grâce à l'API.
 * **status** Il s'agit du code du status de réponse de la requête
@@ -14,32 +61,32 @@ Une version de l'api se trouve à [cette adresse](http://api.documathon.tgrange.
 
 Voici le protocole de l'API:
 
-###/projects
+####/projects
 Cette route affiche tous les projets dans datas
 
-###/projects/:id
+####/projects/:id
 Cette route retourne un projet en particulier. Id est l'identifiant du projet en base.
 
-###/projects/filter/date/:date
+####/projects/filter/date/:date
 Cette route retourne tous les projets qui ont été mis à jour après la date indiquée
 
-###/projects/filter/start/:date
+####/projects/filter/start/:date
 Cette route retourne tous les projets qui ont été commencé après la date indiquée
 
-###/projects/filter/author/:id
+####/projects/filter/author/:id
 Cette route retourne tous auxquel l'auteur a participé
 
-###/projects/filter/material/:date
+####/projects/filter/material/:date
 Cette route retourne tous les projets après la date indiquée
 
-###/projects/filter/tool/:date
+####/projects/filter/tool/:date
 Cette route retourne tous les projets après la date indiquée
 
-###/projects/create/:folderName
+####/projects/create/:folderName
 Cette route permet d'enregistrer un projet. Il faut donner le nom du dossier où se trouve le projet et l'API se charge de l'entrer en base de donnée. Ainsi, le serveur garde la main sur la base de données, tout en permettant à n'importe quel client d'ajouter des projets Documathon.
 
-###Les Autres routes
-####/projects/create
+####Les Autres routes
+#####/projects/create
 Cette route ne donne rien, mais précise à l'utilisateur qu'il se trompe dans l'utilisation de la fonction. Il retourne une erreur de type *4201*
 
 La route retourn le json suivant:
@@ -53,7 +100,7 @@ La route retourn le json suivant:
 		"msg": "ERROR | This is not the correct use of this route. Please use this"
 	}
 	
-####projects/filter
+#####projects/filter
 Cette route ne donne rien, mais indique à l'utilisateur les différents filtres possibles. Il retourne une erreur de type *4205*
 
 	{
@@ -69,7 +116,7 @@ Cette route ne donne rien, mais indique à l'utilisateur les différents filtres
 		"msg": "ERROR | This is not the correct use of this route."
 	}
 
-####Not Found
+#####Not Found
 Si la route n'existe pas, elle renvoie un json de status *404*:
 
 	{
@@ -89,7 +136,7 @@ Si la route n'existe pas, elle renvoie un json de status *404*:
 		"msg": "ERROR | This route dosn't exist. Please try one of them."
 	}
 
-###Listing des status
+####Listing des status
 * **200** : Tout est bon.
 * **404** : La route n'existe pas.
 * **4201**: Il manque le nom du dossier permettant la création d'un projet.

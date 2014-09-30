@@ -121,9 +121,9 @@ function createProject($projectName, $connexion = null){
 
 function createStep($projectId, $base, $text, $connexion = null){
     if($connexion == null)
-		$connexion = connect();
-    
-	$path = 'images/'.$projectId;
+        $connexion = connect();
+
+    $path = '/home/tatiana/www/images/'.$projectId;
     if (!file_exists($path)) {
         try{
             mkdir($path, 0775, true);
@@ -132,19 +132,20 @@ function createStep($projectId, $base, $text, $connexion = null){
             die;
         }
     }
-    
-	$stmt = $connexion->prepare("INSERT INTO `Step` (`path`, `text`, `projectId`) VALUES ('test', '" . $text . "', " . $projectId . ");");
-	$stmt->execute();
- 	$id = $connexion->lastInsertId(); 
 
- 	$image = $path . '/' . $id . '.png';
-	Tools::base64ToJpeg($base,$image);
+    $stmt = $connexion->prepare("INSERT INTO `Step` (`path`, `text`, `projectId`) VALUES ('wait path', '" . $text . "', " . $projectId . ");");
+    $stmt->execute();
+    $id = $connexion->lastInsertId();
 
-	$addPath = $connexion->prepare("UPDATE Step SET path='" . $image . "' WHERE id=" . $id);
-	$addPath->execute();
+    $image = $path . '/' . $id . '.png';
+    $realPath = "http://images.documathon.tgrange.com/$projectId/$id.png";
+    Tools::base64ToJpeg($base,$image);
 
-	return $id;
-	
+    $addPath = $connexion->prepare("UPDATE Step SET path='" . $realPath . "' WHERE id=" . $id);
+    $addPath->execute();
+
+    return $id;
+
 }
 
 

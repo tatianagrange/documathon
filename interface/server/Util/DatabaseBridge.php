@@ -4,9 +4,10 @@
 /*		Connexion function 		  */
 /* ****************************** */
 function connect(){
-	$dns = 'mysql:host=localhost;dbname=documathon;charset=utf8';
-	$utilisateur = 'root';
-	$motDePasse = 'root';
+	$dns = Config::$DNS;
+	$utilisateur = Config::$USER;
+	$motDePasse = Config::$PASSWORD;
+
 	$connexion = null;
 	try
 	{
@@ -18,7 +19,6 @@ function connect(){
         echo 'N° : '.$e->getCode();
         die;
 	}
-
 	return $connexion;
 }
 
@@ -123,22 +123,26 @@ function createStep($projectId, $base, $text, $connexion = null){
     if($connexion == null)
         $connexion = connect();
 
-    $path = '/home/tatiana/www/images/'.$projectId;
+    //$path = '/home/tatiana/www/images/'.$projectId;
+    $path = Config::$IMAGE_PATH . $projectId;
+
     if (!file_exists($path)) {
         try{
             mkdir($path, 0775, true);
         }catch(Exception $e){
-            echo $e;
+            var_dump($e);
             die;
         }
     }
 
-    $stmt = $connexion->prepare("INSERT INTO `Step` (`path`, `text`, `projectId`) VALUES ('wait path', '" . $text . "', " . $projectId . ");");
+    $query = "INSERT INTO `Step` (`path`, `text`, `projectId`) VALUES ('wait path', '" . $text . "', " . $projectId . ");";
+    $stmt = $connexion->prepare($query);
     $stmt->execute();
     $id = $connexion->lastInsertId();
 
     $image = $path . '/' . $id . '.png';
-    $realPath = "http://images.documathon.tgrange.com/$projectId/$id.png";
+    //$realPath = "http://images.documathon.tgrange.com/$projectId/$id.png";
+    $realPath = Config::$IMAGE_SERVER . "/$projectId/$id.png";
     Tools::base64ToJpeg($base,$image);
 
     $addPath = $connexion->prepare("UPDATE Step SET path='" . $realPath . "' WHERE id=" . $id);

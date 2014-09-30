@@ -44,3 +44,6 @@ vendor
 
 # Ignoring all save images
 interface/server/images/*
+
+#Ignoring real Config File
+interface/server/Util/Config.php

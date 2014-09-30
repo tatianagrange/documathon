@@ -120,6 +120,10 @@ io.on('connection', function (socket) {
     });
 
     socket.on('sendImageTest',function(mBase64){
+        //Local
+        //var mUrl = "http://documathon.server:8888/projects/9/addStep/youpiiii";
+
+        //Online
         var mUrl = "http://api.documathon.tgrange.com/projects/10/addStep/youpiiii";
         request.post(
             mUrl,

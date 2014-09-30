@@ -5,6 +5,6 @@ class Config
 	public static $DNS = 'mysql:host=localhost;dbname=documathon;charset=utf8';
 	public static $USER = 'root';
 	public static $PASSWORD = 'root';
-	public static $IMAGE_PATH = 'images/'
+	public static $IMAGE_PATH = 'images/';
 	public static $IMAGE_SERVER = "http://documathon.images:8888";
 }

@@ -445,6 +445,8 @@ Cette partie est nomée serveur, car il permettra, à terme, de stocker au même
 ###Configuration
 Afin de pouvoir utiliser certains scripts, il est nécessaire de réaliser quelques opération sur le serveur.
 
+Le fichier `server/Util/Config.php.default` est à copier sous le nom de `server/Util/Config.php`. On y renseigne les informations propres au server
+
 ####Les Vhost
 Le serveur a besoin de deux Vhost. Dans le serveur donné sur ce projet, on a accès à deux sites:
 

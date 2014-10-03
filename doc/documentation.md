@@ -584,6 +584,10 @@ Si la route n'existe pas, elle renvoie un json de status *404*:
 * **4203**: Aucun projet n'a été enrengistré depuis la date indiquée.
 * **4204**: Le format de la date nest pas valide.
 * **4205**: Affichage des filtres possibles pour les projets
+* **4206**: Cette action n'existe pas.
+* **4207**: L'action `step` necessite de passer la base64 de l'image en paramètre et d'envoyer la requête en POST
+* **4208**: L'enrengistrement existe déjà en base de donnée.
+* **4209**: Les actions `tool` et `material` necessitent d'envoyer la requête en GET
 
 ###Technologie
 L'API est basée sur le micro-framework **Slim Framework**

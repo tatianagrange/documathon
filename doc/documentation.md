@@ -594,3 +594,13 @@ L'API est basée sur le micro-framework **Slim Framework**
 
 [http://www.slimframework.com/]()
 
+####Hacks
+Il faut ajouter une fonction dans le fichier Router.php
+	
+    public function getAllRoutes()
+    {
+        return $this->routes;
+    }
+    
+Cette fonction est utilisée afin de lister toutes les routes disponnibles
+

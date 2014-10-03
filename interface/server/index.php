@@ -427,8 +427,19 @@
 
 	$app->notFound(function () use ($app) {
 	    //Liste all routes
+	    $router   = $app->router();
+	    $routes = $router->getAllRoutes();
+
 	    $tab = array();
-		$tab["In Construction"] = "In Construction";
+
+	    foreach($routes as $route){
+	    	$methods = $route->getHttpMethods();
+	    	$text = "";
+	    	foreach($methods as $key => $method){
+	    		$text .= $method . ( $key == count($methods)-1 ? "." : ", ");
+	    	}
+	    	$tab[$route->getPattern()] = $text;
+	    }
 
 		//Make a response
 		$response = new Response($tab,404,true);

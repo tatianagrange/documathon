@@ -589,6 +589,7 @@ Si la route n'existe pas, elle renvoie un json de status *404*:
 * **4208**: L'enrengistrement existe déjà en base de donnée.
 * **4209**: Les actions `tool` et `material` necessitent d'envoyer la requête en GET
 * **4210**: Le paramètre n'est pas un `int`
+* **4299**: Erreur inconnue
 
 ###Technologie
 L'API est basée sur le micro-framework **Slim Framework**

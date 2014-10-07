@@ -26,7 +26,7 @@ class Tools
 	}
 
 	public static function isInteger($input){
-    return(ctype_digit(strval($input)));
-}
+	    return(ctype_digit(strval($input)));
+	}
 
 }

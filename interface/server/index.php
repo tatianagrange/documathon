@@ -2,6 +2,7 @@
 	require 'vendor/autoload.php';
 	include 'Util/DatabaseBridge.php';
 	include 'Util/Tools.php';
+	include 'Util/Errors.php';
 	include 'Util/Config.php';
 
 	foreach (glob("classes/*.class.php") as $filename)
@@ -25,39 +26,21 @@
 		*	Show all projects
 		*/
 		$app->get('/', function(){
-			//Get projects
-			$tab = requestForAllProjects();
-
-			//Make a response
-			$response = new Response($tab);
-
-			//Send sesponse
+			$response = new Response(Request::requestForAllProjects());
 			echo json_encode($response);
 		});
 
 		/**
 		*	Show One project
 		*/
-		$app->get('/:projectId', function ($projectId) {
-			$projectId = htmlentities($projectId);
-			
-			if(Tools::isInteger($projectId)){
-				$project = requestForProject($projectId);
-
-				if(!is_array($project)){
-					$response = new Response($project);
-				}
-				else{
-					$response = new Response(null,4202,true);
-					$response->addMessage("THIS ID DOSN'T EXIST");
-				}
-			}else{
-				$response = new Response(null, 4210, true);
-				$response->addMessage("Please use int value for the projectId");
+		$app->get('/:projectId', function ($projectId) use($app){
+			if($projectId == "create" || $projectId == "filter"){
+				$app->response->redirect('/', 404);
+				return;
 			}
 
-			//Send sesponse
-			echo json_encode($response);
+			$response = new Response(null);
+			$response->makeResponseForGetId($projectId, "requestForProject");
 		});
 
 		/**
@@ -82,6 +65,9 @@
 
 			switch($what){
 				case 'step':
+					$response = new Response(null,4207,true);
+                	$response->addMessage("The action step have to be posted with 'base64' parameter");
+					break;
 				case 'tool':
 				case 'material':
 					$response = new Response(null,4212,true);
@@ -92,81 +78,26 @@
 		});
 
 		/**
-		*	The action add, for a project, can be in get.
-		*	The actions can be tool or material
+		*	This route have to be posting. It is to make a new step for the project
 		*/
-		$app->get('/:projectId/add/:what/:id', function ($projectId, $what, $id) {
-			$response = new Response(null, 4210, true);
+		$app->post('/:projectId/add/:what', function ($projectId, $what) use($app){
+			$base = $app->request->post('base64');
+            $text = $app->request->post('text');
 
-			$projectId = htmlentities($projectId);
-			$what = htmlentities($what);
-			$id = htmlentities($id);
-
-			if(Tools::isInteger($projectId) && Tools::isInteger($id)){
-				switch($what){
-					case 'step':
-		    			$response = new Response(null,4207,true);
-		    			$response->addMessage("The action step have to be posted with 'base64' parameter");
-						break;
-					case 'tool':
-					case 'material':
-						$state = addToProject($projectId, $what, $id);
-						if($state != null){
-							$response = new Response(null,$state,true);
-							$response->addMessage("The id $id is already associated to the project $projectId");
-						}
-						else{
-							$response = new Response(null);
-							$response->addMessage("The $what have been had");
-						}
-						break;
-				}
-			}else{
-				$response->addMessage("Please use int value for" . (Tools::isInteger($projectId) ? " the id of $what" : " the projectId"));
-			}
-
-			echo json_encode($response);
+            $method = $app->router()->getCurrentRoute()->getHttpMethods()[0];
+			$response = new Response(null);
+			$response->makeResponseForAdd($method, $what, $projectId, null, $base, $text);
 		});
 
 
 		/**
-		*	This route have to be posting. It is to make a new step for the project
+		*	The action add, for a project, can be in get.
+		*	The actions can be tool or material
 		*/
-		$app->post('/:projectId/add/:what/:id', function ($projectId, $what, $id) {
-			$response = new Response(null, 4210, true);
-
-			$projectId = htmlentities($projectId);
-			$what = htmlentities($what);
-			$id = htmlentities($id);
-
-			if(Tools::isInteger($projectId) && Tools::isInteger($id)){
-				$response = new Response(null,4206,true);
-				$response->addMessage("This action doesn't exist.");
-
-				switch($what){
-					case 'step':
-						$base = $app->request->post('base64');
-						if($base == null){
-							$response = new Response(null,4207,true);
-							$response->addMessage("The action step have to be posted with 'base64' parameter");
-						}else{
-			    			$id = createStep($id, $base, $text);
-			    			$response = new Response($id);
-			    			$response->addMessage("The data is the id of the project");
-			    		}
-						break;
-					case 'tool':
-					case 'material':
-						$response = new Response(null,4209,true);
-		    			$response->addMessage("The action $what is a GET request");
-						break;
-					break;
-				}
-			}else{
-				$response->addMessage("Please use int value for" . (Tools::isInteger($projectId) ? " the id of $what" : " the projectId"));
-			}
-
-			echo json_encode($response);
+		$app->get('/:projectId/add/:what/:id', function ($projectId, $what, $id) use($app){
+			$method = $app->router()->getCurrentRoute()->getHttpMethods()[0];
+			$response = new Response(null);
+			$response->makeResponseForAdd($method, $what, $projectId, $id);
 		});
 
 
@@ -176,14 +107,8 @@
 		$app->get('/create/:projectName', function ($projectName) {
 			$projectName = htmlentities($projectName);
 
-			$id = createProject($projectName);
-
-			//Make a response
-			$response = new Response($id);
-			$response->addMessage("The data is the id of the project");
-
-			//Send sesponse
-			echo json_encode($response);
+			$response = new Response(null);
+			$response->makeResponseForGetId($projectName, "createProject",true);
 		});
 
 
@@ -196,7 +121,7 @@
 			*/
 			$app->get('/update/:date', function ($date) {
 				$date = htmlentities($date);
-				
+
 				$response = null;
 
 				//Check the date
@@ -207,7 +132,7 @@
 				}
 				else
 				{
-					$project = requestForProjectsAfter($date);
+					$project = Request::requestForProjectsAfter($date);
 					if(count($project) != 0){
 						$response = new Response($project);
 					}
@@ -235,13 +160,7 @@
 		*	Show all Authors
 		*/
 		$app->get('/', function(){
-			//Get projects
-			$tab = requestForAllAuthors();
-
-			//Make a response
-			$response = new Response($tab);
-
-			//Send sesponse
+			$response = new Response(Request::requestForAllAuthors());
 			echo json_encode($response);
 		});
 
@@ -249,19 +168,13 @@
 		*	Show one Author
 		*/
 		$app->get('/:id', function($id){
-			//Get projects
-			$tab = requestForAuthor($id);
-
-			//Make a response
-			$response = new Response($tab);
-
-			//Send sesponse
-			echo json_encode($response);
+			$response = new Response(null);
+			$response->makeResponseForGetId($id, "requestForAuthor");
 		});
 
 		$app->get('/:id/contribute/:stepId', function($id,$stepId){
 			//Get projects
-			$state = addAuthorToStep($id,$stepId);
+			$state = Request::addAuthorToStep($id,$stepId);
 
 
 			if($state != null){
@@ -289,7 +202,7 @@
 			});
 
 			$app->get('/:name/:birth', function($name, $birth){
-				$id = createAuthor($name,$birth);
+				$id = Request::createAuthor($name,$birth);
 
 				//Make a response
 				$response = new Response($id);
@@ -312,13 +225,7 @@
 		*	Show all Tools
 		*/
 		$app->get('/', function(){
-			//Get projects
-			$tab = requestForAllTools();
-
-			//Make a response
-			$response = new Response($tab);
-
-			//Send sesponse
+			$response = new Response(Request::requestForAllTools());
 			echo json_encode($response);
 		});
 
@@ -326,14 +233,8 @@
 		*	Show one tool
 		*/
 		$app->get('/:id', function($id){
-			//Get projects
-			$tab = requestForTool($id);
-
-			//Make a response
-			$response = new Response($tab);
-
-			//Send sesponse
-			echo json_encode($response);
+			$response = new Response(null);
+			$response->makeResponseForGetId($id, "requestForTool");
 		});
 
 		/**
@@ -343,14 +244,10 @@
 
 			//Redirections
 			$app->get('/:name', function($name){
-				$id = createTool($name);
+				$name = htmlentities($name);
 
-				//Make a response
-				$response = new Response($id);
-				$response->addMessage("The data is the id of the project");
-
-				//Send sesponse
-				echo json_encode($response);
+				$response = new Response(null);
+				$response->makeResponseForGetId($name, "createTool",true);
 			});
 		});
 	});
@@ -364,13 +261,7 @@
 		*	Show all Tools
 		*/
 		$app->get('/', function(){
-			//Get projects
-			$tab = requestForAllMaterials();
-
-			//Make a response
-			$response = new Response($tab);
-
-			//Send sesponse
+			$response = new Response(Request::requestForAllMaterials());
 			echo json_encode($response);
 		});
 
@@ -378,14 +269,8 @@
 		*	Show one tool
 		*/
 		$app->get('/:id', function($id){
-			//Get projects
-			$tab = requestForMaterial($id);
-
-			//Make a response
-			$response = new Response($tab);
-
-			//Send sesponse
-			echo json_encode($response);
+			$response = new Response(null);
+			$response->makeResponseForGetId($id, "requestForMaterial");
 		});
 
 		/**
@@ -408,7 +293,7 @@
 
 			//Real route
 			$app->get('/:name/:width/:length/:thickness', function($name,$width,$length,$thickness){
-				$id = createMaterial($name, $width, $length, $thickness);
+				$id = Request::createMaterial($name, $width, $length, $thickness);
 
 				//Make a response
 				$response = new Response($id);

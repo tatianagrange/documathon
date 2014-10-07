@@ -78,8 +78,8 @@
 		$app->post('/:projectId/add/:what', function ($projectId, $what) use($app){
 			$base = $app->request->post('base64');
             $text = $app->request->post('text');
-
-            $method = $app->router()->getCurrentRoute()->getHttpMethods()[0];
+            $array = $app->router()->getCurrentRoute()->getHttpMethods();
+            $method = $array[0];
 			$response = new Response(null);
 			$response->makeResponseForAdd($method, $what, $projectId, null, $base, $text);
 		});
@@ -90,7 +90,8 @@
 		*	The actions can be tool or material
 		*/
 		$app->get('/:projectId/add/:what/:id', function ($projectId, $what, $id) use($app){
-			$method = $app->router()->getCurrentRoute()->getHttpMethods()[0];
+            $array = $app->router()->getCurrentRoute()->getHttpMethods();
+            $method = $array[0];
 			$response = new Response(null);
 			$response->makeResponseForAdd($method, $what, $projectId, $id);
 		});

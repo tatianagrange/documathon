@@ -501,76 +501,111 @@ Une version de l'api se trouve à [cette adresse](http://api.documathon.tgrange.
 
 Voici le protocole de l'API:
 
+####/
+Cette route renvoie une erreur `404` et affiche toutes les routes existantes
+
 ####/projects
 Cette route affiche tous les projets dans datas
 
-####/projects/:id
-Cette route retourne un projet en particulier. Id est l'identifiant du projet en base.
+####/projects/:projectId
+Cette route retourne un projet en particulier. Id est l'identifiant du projet en base. La route lève une exception `4202` si l'id n'existe pas en base.
 
-####/projects/filter/date/:date
-Cette route retourne tous les projets qui ont été mis à jour après la date indiquée
+####/projects/:projectId/add
+Renvois une erreur `4211` et affiche les options possibles. ProjectId est toujours l'id du projet en base de données.
 
-####/projects/filter/start/:date
-Cette route retourne tous les projets qui ont été commencé après la date indiquée
+####/projects/:projectId/add/:what
+#####GET
+Utilisée en GET, cette route lève une erreur `4212` si l'action *what* est connue. 
 
-####/projects/filter/author/:id
-Cette route retourne tous auxquel l'auteur a participé
+Si *what* n'existe pas, la route lève une erreur `4206`.
 
-####/projects/filter/material/:date
-Cette route retourne tous les projets après la date indiquée
+Si *what* est l'action `step`, la route lève une erreur `4207`.
 
-####/projects/filter/tool/:date
-Cette route retourne tous les projets après la date indiquée
+#####POST
+Utilisée en POST, cette route permet de créer une nouvelle étape.
 
-####/projects/create/:folderName
-Cette route permet d'enregistrer un projet. Il faut donner le nom du dossier où se trouve le projet et l'API se charge de l'entrer en base de donnée. Ainsi, le serveur garde la main sur la base de données, tout en permettant à n'importe quel client d'ajouter des projets Documathon.
+Si la route ne trouve pas la variable `base64` en POST, l'erreur `4207` est levée.
 
-####Les Autres routes
-#####/projects/create
-Cette route ne donne rien, mais précise à l'utilisateur qu'il se trompe dans l'utilisation de la fonction. Il retourne une erreur de type *4201*
+Si l'action *what* est `tool`ou `material`, la route lève l'exception `4209`
 
-La route retourn le json suivant:
+####/projects/create/:projectName
+Cette route permet d'enregistrer un projet. Elle prends en paramètre le nom du projet. Elle retourne l'id du projet créé.
 
-	{
-		"datas": {
-			"/projects/create/:folderName": "Create a new project in database, with de folder pass in argument"
-		},
-		"status": 4201,
-		"error": true,
-		"msg": "ERROR | This is not the correct use of this route. Please use this"
-	}
-	
-#####projects/filter
-Cette route ne donne rien, mais indique à l'utilisateur les différents filtres possibles. Il retourne une erreur de type *4205*
+####/projects/filter/update/:date
+Cette route retourne tous les projets qui ont été mis à jour après la date indiquée. Elle lève une exception `4204` si la date n'est pas valide.
 
-	{
-		"datas": {
-			"/projects/filter/date/:date": "Get the projects update after the date in timestamp",
-			"/projects/filter/start/:date": "Get the projects start after the date in timestamp",
-			"/projects/filter/author/:id": "Get the projects on which the author participated.",
-			"/projects/filter/material/:id": "Get the projects on which use the material.",
-			"/projects/filter/tool/:id": "Get the projects on which use the tool."
-		},
-		"status": 4205,
-		"error": true,
-		"msg": "ERROR | This is not the correct use of this route."
-	}
+`date`doit être un timestamp.
 
-#####Not Found
+####authors/
+Affiche tous les Auteurs
+
+####/authors/:id
+Cette route retourne un auteur en particulier. Id est l'identifiant de l'auteur en base. La route lève une exception `4202` si l'id n'existe pas.
+
+####/authors/:id/contribute/:stepId
+Cette route permet d'enrengistrer la participation d'un utilisateur à une étape. La route lève une exception `4202` si l'id n'existe pas.
+
+####/authors/create/:name
+Cette route permet de créer un auteur avec le nom donner en paramètre. La route retourne l'id de l'auteur créé en base.
+
+####/authors/create/:name/:birth
+Cette route permet de créer un auteur avec le nom donner en paramètre, mais en ajoutant la date de naissance de celui-ci. La route retourne l'id de l'auteur créé en base.
+
+####/tools/
+Retourne tous les outils
+
+####/tools/:id
+Cette route retourne un outils en particulier. Id est l'identifiant de l'outils en base. La route lève une exception `4202` si l'id n'existe pas.
+
+####/tools/create/:name
+Cette route permet de créer un outils avec le nom donner en paramètre. La route retourne l'id de l'outils créé en base.
+
+####/materials/
+Retourne tous les matériaux
+
+####/materials/:id
+Cette route retourne un matériaux en particulier. Id est l'identifiant du matériaux en base. La route lève une exception `4202` si l'id n'existe pas.
+
+####/materials/create/:name
+Cette route permet de créer un matériaux avec le nom donner en paramètre. La route retourne l'id de du matériaux créé en base.
+
+####/materials/create/:name/:width
+Cette route permet de créer un matériaux avec le nom donner en paramètre, en ajoutant la largeur. La route retourne l'id de du matériaux créé en base.
+
+####/materials/create/:name/:width/:length
+Cette route permet de créer un matériaux avec le nom donner en paramètre, en ajoutant la largeur et la longueur. La route retourne l'id de du matériaux créé en base.
+
+####/materials/create/:name/:width/:length/:thickness
+Cette route permet de créer un matériaux avec le nom donner en paramètre, en ajoutant la largeur, la longueur et l'épaisseur. La route retourne l'id de du matériaux créé en base.
+
+####404
 Si la route n'existe pas, elle renvoie un json de status *404*:
 
 	{
-		"datas": {
-			"/projects": "Show all projects",
-			"/projects/:id": "Show One project",
-			"/projects/create/:folderName": "Create a new project in database, with de folder pass in argument",
-			"/projects/filter": "Get all route with filter for projects",
-			"/projects/filter/date/:date": "Get the projects update after the date in timestamp",
-			"/projects/filter/start/:date": "Get the projects start after the date in timestamp",
-			"/projects/filter/author/:id": "Get the projects on which the author participated.",
-			"/projects/filter/material/:id": "Get the projects on which use the material.",
-			"/projects/filter/tool/:id": "Get the projects on which use the tool."
-		},
+		"datas": [
+			"/projects/",
+			"/projects/:projectId",
+			"/projects/:projectId/add",
+			"/projects/:projectId/add/:what",
+			"/projects/:projectId/add/:what",
+			"/projects/:projectId/add/:what/:id",
+			"/projects/create/:projectName",
+			"/projects/filter/update/:date",
+			"/authors/",
+			"/authors/:id",
+			"/authors/:id/contribute/:stepId",
+			"/authors/create/:name",
+			"/authors/create/:name/:birth",
+			"/tools/",
+			"/tools/:id",
+			"/tools/create/:name",
+			"/materials/",
+			"/materials/:id",
+			"/materials/create/:name",
+			"/materials/create/:name/:width",
+			"/materials/create/:name/:width/:length",
+			"/materials/create/:name/:width/:length/:thickness"
+		],
 		"status": 404,
 		"error": true,
 		"msg": "ERROR | This route dosn't exist. Please try one of them."

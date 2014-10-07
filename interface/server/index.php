@@ -54,7 +54,7 @@
 		/**
 		*	Choose the type of add
 		*/
-		$app->get('/:projectId/add/:what/', function ($projectId,$what){
+		$app->get('/:projectId/add/:what', function ($projectId,$what){
 			$response = new Response(null,4206,true);
 			$response->addMessage("This action doesn't exist.");
 

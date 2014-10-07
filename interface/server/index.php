@@ -1,11 +1,12 @@
 <?php
 	require 'vendor/autoload.php';
-	include 'Util/DatabaseBridge.php';
-	include 'Util/Tools.php';
-	include 'Util/Errors.php';
-	include 'Util/Config.php';
 
 	foreach (glob("classes/*.class.php") as $filename)
+	{
+	    include $filename;
+	}
+
+	foreach (glob("Util/*.php") as $filename)
 	{
 	    include $filename;
 	}

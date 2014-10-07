@@ -1,60 +1,5 @@
 <?php
 
-class Database{
-	/* ****************************** */
-	/*		Connexion function 		  */
-	/* ****************************** */
-	public static function connect(){
-		$dns = Config::$DNS;
-		$utilisateur = Config::$USER;
-		$motDePasse = Config::$PASSWORD;
-
-		$connexion = null;
-		try
-		{
-		    $connexion = new PDO( $dns, $utilisateur, $motDePasse );
-		    $connexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
-		}
-		catch(Exception $e)
-		{
-	        echo 'Erreur : '.$e->getMessage().'<br />';
-	        echo 'N° : '.$e->getCode();
-	        die;
-		}
-		return $connexion;
-	}
-
-	public static function pdoExec($query, $connexion = null){
-		if($connexion == null)
-			$connexion = Database::connect();
-
-		try { 
-			$stmt = $connexion->prepare($query);
-			$stmt->execute();
-		}
-		catch (PDOException $e) { 
-		    if ($e->getCode() == '23000') {
-		    	//Switch on driver error. Here, Mysql
-		    	switch($e->errorInfo[1]){
-		    		case 1062:
-		    			$code = 4208;
-		    			break;
-		    		case 1452:
-		    			$code = 4202;
-		    			break;
-		    		default:
-		    			$code = 4299;
-		    			break;
-		    	}
-		    	throw new Exception($e->getMessage(), $code);
-		        
-		    }
-		} 
-
-		return $connexion;
-	}
-}
-
 
 class Request{
 	/* ****************************** */
@@ -63,34 +8,34 @@ class Request{
 
 
 	//Shortcut
-	public static function requestForAllAuthors($connexion = null){
-		return Request::requestFor("SELECT * FROM Author", 'Author', $connexion);
+	public static function requestForAllAuthors(){
+		return Request::requestFor("SELECT * FROM Author", 'Author');
 	}
 
-	public static function requestForAllTools($connexion = null){
-		return Request::requestFor("SELECT * FROM Tool", 'Tool', $connexion);
+	public static function requestForAllTools(){
+		return Request::requestFor("SELECT * FROM Tool", 'Tool');
 	}
 
-	public static function requestForAllMaterials($connexion = null){
-		return Request::requestFor("SELECT * FROM Material", 'Material', $connexion);
+	public static function requestForAllMaterials(){
+		return Request::requestFor("SELECT * FROM Material", 'Material');
 	}
 
-	public static function requestForAuthor($id = null, $connexion = null){
-		return Request::requestFor("SELECT * FROM Author WHERE id=$id", 'Author', $connexion);
+	public static function requestForAuthor($id){
+		return Request::requestFor("SELECT * FROM Author WHERE id=$id", 'Author');
 	}
 
-	public static function requestForTool($id = null, $connexion = null){
-		return Request::requestFor("SELECT * FROM Tool WHERE id=$id", 'Tool', $connexion);
+	public static function requestForTool($id){
+		return Request::requestFor("SELECT * FROM Tool WHERE id=$id", 'Tool');
 	}
 
-	public static function requestForMaterial($id = null, $connexion = null){
-		return Request::requestFor("SELECT * FROM Material WHERE id=$id", 'Material', $connexion);
+	public static function requestForMaterial($id){
+		return Request::requestFor("SELECT * FROM Material WHERE id=$id", 'Material');
 	}
 
 	//Real generic function
-	public static function requestFor($query, $class, $connexion = null){
+	public static function requestFor($query, $class){
 		$tab = array();
-		$tab = Request::hydrate($tab, $query, $class, $connexion);
+		$tab = Request::hydrate($tab, $query, $class);
 
 	  	if(count($tab) == 1)
 	  		return $tab[0];
@@ -107,12 +52,11 @@ class Request{
 	/**
 	*	This function is used to associate the authors of a step to the object step pass in parameters
 	*/
-	public static function requestForAuthorsOfStep($step, $connexion = null){
+	public static function requestForAuthorsOfStep($step){
 		$step->authors = Request::hydrate(
 			$step->authors,
 			"SELECT id, name FROM Author JOIN Step_has_Author ON Step_has_Author.authorId=Author.id WHERE Step_has_Author.stepId='" . $step->id . "'",
-			'Author',
-			$connexion);
+			'Author');
 	}
 
 
@@ -127,24 +71,24 @@ class Request{
 	/* ****************************************** */
 
 	//Shortcuts
-	public static function requestForAllProjects($connexion = null){
-		return Request::requestForManyProjects("SELECT * FROM Project", $connexion);
+	public static function requestForAllProjects(){
+		return Request::requestForManyProjects("SELECT * FROM Project");
 	}
 
-	public static function requestForProjectsAfter($date, $connexion = null){
-		return Request::requestForManyProjects("SELECT * FROM Project WHERE UNIX_TIMESTAMP(date)>" . $date, $connexion);
+	public static function requestForProjectsAfter($date){
+		return Request::requestForManyProjects("SELECT * FROM Project WHERE UNIX_TIMESTAMP(date)>" . $date);
 	}
 
 	//Real request for many project
-	public static function requestForManyProjects($query, $connexion = null){
-		if($connexion == null)
-			$connexion = Database::connect();
+	public static function requestForManyProjects($query){
+
+		$connexion = Database::getInstance()->getConnexion();
 
 		$tab = array();
 		$projects = $connexion->query($query);
 
 		while($project = $projects->fetchObject('Project')) {
-			Request::hydrateProject($project, $connexion);
+			Request::hydrateProject($project);
 	    	$tab[] = $project;
 	  	}
 
@@ -159,15 +103,14 @@ class Request{
 	/**
 	*	This function return only the project for the id pass in argument
 	*/
-	public static function requestForProject($id = null, $connexion = null){
-		if($connexion == null)
-			$connexion = Database::connect();
+	public static function requestForProject(){
+		$connexion = Database::getInstance()->getConnexion();
 
 		$tab = array();
 		$projects = $connexion->query("SELECT * FROM Project WHERE id='" . $id ."'");
 
 		while($project = $projects->fetchObject('Project')) {
-			Request::hydrateProject($project, $connexion);
+			Request::hydrateProject($project);
 	    	return $project;
 	  	}
 	  	return null;
@@ -175,31 +118,28 @@ class Request{
 
 
 	//Request for childs of project
-	private static function requestForStepsOfProject($project, $connexion = null){
-		if($connexion == null)
-			$connexion = Database::connect();
+	private static function requestForStepsOfProject($project){
+		$connexion = Database::getInstance()->getConnexion();
 
 		$stepsForProject = $connexion->query("SELECT * FROM Step WHERE projectId='". $project->id ."'");
 		while($step = $stepsForProject->fetchObject('Step')){
-			Request::requestForAuthorsOfStep($step,$connexion);
+			Request::requestForAuthorsOfStep($step);
 			$project->steps[] = $step;
 		}
 	}
 
-	private static function requestForToolsOfProject($project, $connexion = null){
+	private static function requestForToolsOfProject($project){
 		$project->tools = Request::hydrate(
 			$project->tools, 
 			"SELECT id, name FROM Tool JOIN Tool_has_Project ON Tool_has_Project.toolId=Tool.id WHERE Tool_has_Project.projectId='" . $project->id . "'",
-			'Tool',
-			$connexion);
+			'Tool');
 	}
 
-	private static function requestForMaterialsOfProject($project, $connexion = null){
+	private static function requestForMaterialsOfProject($project){
 		$project->materials = Request::hydrate(
 			$project->materials,
 			"SELECT id, name, width, length, thickness FROM Material JOIN Material_has_Project ON Material_has_Project.materialId=Material.id WHERE Material_has_Project.projectId='" . $project->id . "'",
-			'Material',
-			$connexion);
+			'Material');
 	}
 
 
@@ -209,12 +149,12 @@ class Request{
 	/*		Save functions 		  */
 	/* ************************** */
 
-	public static function addToProject($projectId, $what, $id, $connexion = null){
+	public static function addToProject($projectId, $what, $id){
 		$field = $what . "Id";
 		$table = ucfirst($what) . "_has_Project";
 		$query = "INSERT INTO `$table` (`$field`, `projectId`) VALUES ($id, $projectId);";
 		try{
-			Request::create($query, $connexion);
+			Request::create($query);
 		}
 		catch(Exception $e){
 			return $e->getCode();
@@ -222,10 +162,10 @@ class Request{
 		return null;
 	}
 
-	public static function addAuthorToStep($authorId, $stepId, $connexion = null){
+	public static function addAuthorToStep($authorId, $stepId){
 		$query = "INSERT INTO `Step_has_Author` (`stepId`, `authorId`) VALUES ($stepId, $authorId);";
 		try{
-			Request::create($query, $connexion);
+			Request::create($query);
 		}
 		catch(Exception $e){
 			return $e->getCode();
@@ -233,24 +173,24 @@ class Request{
 		return null;
 	}
 
-	public static function createAuthor($name, $birth, $connexion = null){
+	public static function createAuthor($name, $birth){
 		$query = "INSERT INTO `Author` (`name`, `birth`) VALUES ('$name', $birth);";
-		return Request::create($query, $connexion);
+		return Request::create($query);
 	}
 
-	public static function createTool($name, $connexion = null){
+	public static function createTool($name){
 		$query = "INSERT INTO `Tool` (`name`) VALUES ('$name');";
-		return Request::create($query, $connexion);
+		return Request::create($query);
 	}
 
-	public static function createMaterial($name, $width, $length, $thickness, $connexion = null){
+	public static function createMaterial($name, $width, $length, $thickness){
 		$query = "INSERT INTO `Material` (`name`, `width`, `length`, `thickness`) VALUES ('$name', $width, $length, $thickness);";
-		return Request::create($query, $connexion);
+		return Request::create($query);
 	}
 
-	private static function create($query, $connexion = null){
+	private static function create($query){
 		try{
-			$connexion = Database::pdoExec($query,$connexion);
+			$connexion = Database::getInstance()->pdoExec($query);
 		}
 		catch(Exception $e){
 			throw $e;
@@ -259,19 +199,18 @@ class Request{
 	}
 
 
-	public static function createProject($projectName, $connexion = null){
+	public static function createProject($projectName){
 		//Get actual time
 		$datetime = new DateTime();
 		$date = date("Y-m-d H:i:s", $datetime->getTimestamp());
 
 		//Save in base
 		$query = "INSERT INTO Project (name, start, date) VALUES ('" . $projectName . "', '" . $date . "', '" . $date . "')";
-		$connexion = Database::pdoExec($query,$connexion);
+		$connexion = Database::getInstance()->pdoExec($query);
 	    return $connexion->lastInsertId(); 
 	}
 
-	public static function createStep($projectId, $base, $text, $connexion = null){
-	    //$path = '/home/tatiana/www/images/'.$projectId;
+	public static function createStep($projectId, $base, $text){
 	    $path = Config::$IMAGE_PATH . $projectId;
 
 	    if (!file_exists($path)) {
@@ -285,7 +224,7 @@ class Request{
 
 	    //Save Step
 	    $query = "INSERT INTO `Step` (`path`, `text`, `projectId`) VALUES ('wait path', '" . $text . "', " . $projectId . ");";
-	   	$connexion = Database::pdoExec($query, $connexion);
+	   	$connexion = Database::getInstance()->pdoExec($query);
 
 	    //Get id after save step
 	    $id = $connexion->lastInsertId();
@@ -298,7 +237,7 @@ class Request{
 
 	    //Update Step in base
 	    $query = "UPDATE Step SET path='" . $realPath . "' WHERE id=" . $id;
-	    $connexion = Database::pdoExec($query, $connexion);
+	    $connexion = Database::getInstance()->pdoExec($query);
 
 	    return $id;
 
@@ -309,18 +248,14 @@ class Request{
 	/*		Hydrate functions 		  */
 	/* ****************************** */
 
-	private static function hydrateProject($project, $connexion){
-		if($connexion == null)
-			$connexion = Database::connect();
-
-		Request::requestForStepsOfProject($project,$connexion);
-		Request::requestForMaterialsOfProject($project,$connexion);
-		Request::requestForToolsOfProject($project,$connexion);
+	private static function hydrateProject($project){
+		Request::requestForStepsOfProject($project);
+		Request::requestForMaterialsOfProject($project);
+		Request::requestForToolsOfProject($project);
 	}
 
-	private static function hydrate($objectTab, $query, $class, $connexion){
-		if($connexion == null)
-			$connexion = Database::connect();
+	private static function hydrate($objectTab, $query, $class){
+		$connexion = Database::getInstance()->getConnexion();
 
 		$tabResult = $connexion->query($query);
 		while($obj = $tabResult->fetchObject($class)){

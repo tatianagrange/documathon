@@ -142,7 +142,7 @@ Si la route n'existe pas, elle renvoie un json de status *404*:
 * **200** : Tout est bon.
 * **404** : La route n'existe pas.
 * **4201**: Il manque le nom du dossier permettant la création d'un projet.
-* **4202**: Aucun projet ne possède l'id demandé.
+* **4202**: L'id demandé n'existe pas.
 * **4203**: Aucun projet n'a été enrengistré depuis la date indiquée.
 * **4204**: Le format de la date nest pas valide.
 * **4205**: Affichage des filtres possibles pour les projets
@@ -150,6 +150,7 @@ Si la route n'existe pas, elle renvoie un json de status *404*:
 * **4207**: L'action `step` necessite de passer la base64 de l'image en paramètre et d'envoyer la requête en POST
 * **4208**: L'enrengistrement existe déjà en base de donnée.
 * **4209**: Les actions `tool` et `material` necessitent d'envoyer la requête en GET
+* **4210**: Le paramètre n'est pas un `int`
 
 ###Technologie
 L'API est basée sur le micro-framework **Slim Framework**

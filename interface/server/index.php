@@ -39,47 +39,90 @@
 		*	Show One project
 		*/
 		$app->get('/:projectId', function ($projectId) {
-			//Get project
-			$project = requestForProject($projectId);
+			$projectId = htmlentities($projectId);
+			
+			if(Tools::isInteger($projectId)){
+				$project = requestForProject($projectId);
 
-			if(!is_array($project)){
-				$response = new Response($project);
-			}
-			else{
-				$response = new Response(null,4202,true);
-				$response->addMessage("THIS ID DOSN'T EXIST");
+				if(!is_array($project)){
+					$response = new Response($project);
+				}
+				else{
+					$response = new Response(null,4202,true);
+					$response->addMessage("THIS ID DOSN'T EXIST");
+				}
+			}else{
+				$response = new Response(null, 4210, true);
+				$response->addMessage("Please use int value for the projectId");
 			}
 
 			//Send sesponse
 			echo json_encode($response);
 		});
 
+		/**
+		*	Choose the type of add
+		*/
+		$app->get('/:projectId/add', function ($projectId){
+			$tab = array();
+			$tab[0] = "tool";
+			$tab[1] = "material";
+			$tab[2] = "step";
+			$response = new Response($tab,4211,true);
+			$response->addMessage("You can use three type of add, on a project. tool, material and step. Exemple: /projects/1/add/tool/3");
+			echo json_encode($response);
+		});
+
+		/**
+		*	Choose the type of add
+		*/
+		$app->get('/:projectId/add/:what/', function ($projectId,$what){
+			$response = new Response(null,4206,true);
+			$response->addMessage("This action doesn't exist.");
+
+			switch($what){
+				case 'step':
+				case 'tool':
+				case 'material':
+					$response = new Response(null,4212,true);
+					$response->addMessage("The id of $what is missing");
+			}
+			
+			echo json_encode($response);
+		});
 
 		/**
 		*	The action add, for a project, can be in get.
 		*	The actions can be tool or material
 		*/
 		$app->get('/:projectId/add/:what/:id', function ($projectId, $what, $id) {
-			$response = new Response(null,4206,true);
-			$response->addMessage("This action doesn't exist.");
+			$response = new Response(null, 4210, true);
 
-			switch($what){
-				case 'step':
-	    			$response = new Response(null,4207,true);
-	    			$response->addMessage("The action step have to be posted with 'base64' parameter");
-					break;
-				case 'tool':
-				case 'material':
-					$state = addToProject($projectId, $what, $id);
-					if($state != null){
-						$response = new Response(null,$state,true);
-						$response->addMessage("The id $id is already associated to the project $projectId");
-					}
-					else{
-						$response = new Response(null);
-						$response->addMessage("The $what have been had");
-					}
-					break;
+			$projectId = htmlentities($projectId);
+			$what = htmlentities($what);
+			$id = htmlentities($id);
+
+			if(Tools::isInteger($projectId) && Tools::isInteger($id)){
+				switch($what){
+					case 'step':
+		    			$response = new Response(null,4207,true);
+		    			$response->addMessage("The action step have to be posted with 'base64' parameter");
+						break;
+					case 'tool':
+					case 'material':
+						$state = addToProject($projectId, $what, $id);
+						if($state != null){
+							$response = new Response(null,$state,true);
+							$response->addMessage("The id $id is already associated to the project $projectId");
+						}
+						else{
+							$response = new Response(null);
+							$response->addMessage("The $what have been had");
+						}
+						break;
+				}
+			}else{
+				$response->addMessage("Please use int value for" . (Tools::isInteger($projectId) ? " the id of $what" : " the projectId"));
 			}
 
 			echo json_encode($response);
@@ -89,7 +132,14 @@
 		/**
 		*	This route have to be posting. It is to make a new step for the project
 		*/
-			$app->post('/:projectId/add/:what/:id', function ($projectId, $what, $id) {
+		$app->post('/:projectId/add/:what/:id', function ($projectId, $what, $id) {
+			$response = new Response(null, 4210, true);
+
+			$projectId = htmlentities($projectId);
+			$what = htmlentities($what);
+			$id = htmlentities($id);
+
+			if(Tools::isInteger($projectId) && Tools::isInteger($id)){
 				$response = new Response(null,4206,true);
 				$response->addMessage("This action doesn't exist.");
 
@@ -112,17 +162,21 @@
 						break;
 					break;
 				}
+			}else{
+				$response->addMessage("Please use int value for" . (Tools::isInteger($projectId) ? " the id of $what" : " the projectId"));
+			}
 
-				echo json_encode($response);
-			});
+			echo json_encode($response);
+		});
 
 
 		/**
 		*	Create a new project in database, giving the name
 		*/
 		$app->get('/create/:projectName', function ($projectName) {
-			$id = createProject($projectName);
+			$projectName = htmlentities($projectName);
 
+			$id = createProject($projectName);
 
 			//Make a response
 			$response = new Response($id);
@@ -131,16 +185,6 @@
 			//Send sesponse
 			echo json_encode($response);
 		});
-
-		// $app->group('/associate', function () use ($app) {
-		// 	$app->get('/tool/:id', function ($id) {
-		// 		$state = associateToolAndProject()
-		// 	});
-
-		// 	$app->get('/tool/:id', function ($id) {
-
-		// 	});
-		// });
 
 
 		/**
@@ -151,6 +195,8 @@
 			*	Get all project after the date in parameter
 			*/
 			$app->get('/update/:date', function ($date) {
+				$date = htmlentities($date);
+				
 				$response = null;
 
 				//Check the date
@@ -171,50 +217,6 @@
 					}
 				}
 				
-				//Send sesponse
-				echo json_encode($response);
-			});
-
-
-			/**
-			*	Get all project which start after date
-			*/
-			$app->get('/start/:date', function ($date) {
-				$response = new Response(42);
-				$response->addMessage("Under construction");
-				//Send sesponse
-				echo json_encode($response);
-			});
-
-
-			/**
-			*	Get the projects on which the author participated
-			*/
-			$app->get('/author/:id', function ($date) {
-				$response = new Response(42);
-				$response->addMessage("Under construction");
-				//Send sesponse
-				echo json_encode($response);
-			});
-
-
-			/**
-			*	Get the projects on which use the material
-			*/
-			$app->get('/material/:id', function ($date) {
-				$response = new Response(42);
-				$response->addMessage("Under construction");
-				//Send sesponse
-				echo json_encode($response);
-			});
-
-
-			/**
-			*	Get the projects on which use the tool
-			*/
-			$app->get('/tool/:id', function ($date) {
-				$response = new Response(42);
-				$response->addMessage("Under construction");
 				//Send sesponse
 				echo json_encode($response);
 			});
@@ -438,7 +440,8 @@
 	    	foreach($methods as $key => $method){
 	    		$text .= $method . ( $key == count($methods)-1 ? "." : ", ");
 	    	}
-	    	$tab[$route->getPattern()] = $text;
+	    	$pat = $route->getPattern();
+	    	$tab[] = $pat;
 	    }
 
 		//Make a response

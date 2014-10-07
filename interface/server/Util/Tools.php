@@ -25,4 +25,8 @@ class Tools
 		file_put_contents($file, base64_decode($base64));
 	}
 
+	public static function isInteger($input){
+    return(ctype_digit(strval($input)));
+}
+
 }

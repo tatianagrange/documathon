@@ -106,9 +106,9 @@ class Database{
 	*	1062 -> Duplicate entry
 	*	1452 -> The id doesn't exist
 	*/
-	private function pdoExec($query){
+	public function pdoExec($query){
 		try { 
-			$stmt = $this->prepare($query);
+			$stmt = $this->connexion->prepare($query);
 			$stmt->execute();
 		}
 		catch (PDOException $e) { 

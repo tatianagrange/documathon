@@ -1,15 +1,9 @@
 <?php
 	require 'vendor/autoload.php';
+	foreach (glob("classes/*.class.php") as $filename){include $filename;}
+	foreach (glob("Util/*.php") as $filename){include $filename;}
+	foreach (glob("Util/Bridge/*.php") as $filename){include $filename;}
 
-	foreach (glob("classes/*.class.php") as $filename)
-	{
-	    include $filename;
-	}
-
-	foreach (glob("Util/*.php") as $filename)
-	{
-	    include $filename;
-	}
 
 	$app = new \Slim\Slim();
 	$app->response->headers->set('Content-Type', 'application/json');
@@ -27,7 +21,7 @@
 		*	Show all projects
 		*/
 		$app->get('/', function(){
-			$response = new Response(Request::requestForAllProjects());
+			$response = new Response(Request::getInstance()->requestForAllProjects());
 			echo json_encode($response);
 		});
 
@@ -107,7 +101,7 @@
 		*/
 		$app->get('/create/:projectName', function ($projectName) {
 			$projectName = htmlentities($projectName);
-
+			
 			$response = new Response(null);
 			$response->makeResponseForGetId($projectName, "createProject",true);
 		});
@@ -161,7 +155,7 @@
 		*	Show all Authors
 		*/
 		$app->get('/', function(){
-			$response = new Response(Request::requestForAllAuthors());
+			$response = new Response(Request::getInstance()->requestForAllAuthors());
 			echo json_encode($response);
 		});
 
@@ -203,7 +197,7 @@
 			});
 
 			$app->get('/:name/:birth', function($name, $birth){
-				$id = Request::createAuthor($name,$birth);
+				$id = Save::getInstance()->createAuthor($name,$birth);
 
 				//Make a response
 				$response = new Response($id);
@@ -226,7 +220,7 @@
 		*	Show all Tools
 		*/
 		$app->get('/', function(){
-			$response = new Response(Request::requestForAllTools());
+			$response = new Response(Request::getInstance()->requestForAllTools());
 			echo json_encode($response);
 		});
 
@@ -262,7 +256,7 @@
 		*	Show all Tools
 		*/
 		$app->get('/', function(){
-			$response = new Response(Request::requestForAllMaterials());
+			$response = new Response(Request::getInstance()->requestForAllMaterials());
 			echo json_encode($response);
 		});
 
@@ -294,7 +288,7 @@
 
 			//Real route
 			$app->get('/:name/:width/:length/:thickness', function($name,$width,$length,$thickness){
-				$id = Request::createMaterial($name, $width, $length, $thickness);
+				$id = Save::getInstance()->createMaterial($name, $width, $length, $thickness);
 
 				//Make a response
 				$response = new Response($id);

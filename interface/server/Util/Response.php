@@ -117,13 +117,18 @@ class Response {
     /**************
     *  Functions  *
     ***************/
-    public function makeResponseForGetId($id, $function, $dontCheckInt = false){
+    public function makeResponseForGetId($id, $function, $isCreation = false){
         $id = htmlentities($id);
             
-        if(!$dontCheckInt &&!Errors::checkIfIsInt(array($id), $this))
+        if(!$isCreation &&!Errors::checkIfIsInt(array($id), $this))
             return;
 
-        $object = Errors::getObjectForId($id, Request::$function($id), $this);
+        if($isCreation){
+            $object = Errors::getObjectForId($id, Save::getInstance()->$function($id), $this);
+        }
+        else{
+            $object = Errors::getObjectForId($id, Request::getInstance()->$function($id), $this);
+        }
 
         if($object){
             $this->setArray($object);
@@ -162,7 +167,7 @@ class Response {
     public function makeResponseForAddToProject($projectId, $what, $id, $method){
         switch($method){
             case "GET":
-                $state = Request::addToProject($projectId, $what, $id);
+                $state = Save::getInstance()->addToProject($projectId, $what, $id);
                 if($state != null){
                     $this->setStatus($state);
                     $this->setError(true);
@@ -196,7 +201,7 @@ class Response {
                     if($text = null)
                         $text = "";
                     $this->toSuccess();
-                    $this->datas = Request::createStep($id, $base, $text);;
+                    $this->datas = Save::getInstance()->createStep($id, $base, $text);;
                     $response->addMessage("The data is the id of the project");
                 }
                 break;

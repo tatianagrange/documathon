@@ -33,40 +33,28 @@
 
 
 /**
- * Error
+ * Hydrate
  *
- * 	Tis class only have statics methods, only to print error.
+ * 	This class is used to make objects from datas in an array.
  *
  * @author  Tatiana Grange
  * @since   0.2
  */
-class Errors
-{
-	public static function checkIfIsInt($tab, $response)
-	{
-		foreach($tab as $toCheck){
-			if(!Tools::isInteger($toCheck)){
-				$response->setError(4210);
-				$response->setStatus(false);
-				$response->setArray(null);
-				$response->addMessage("$toCheck is not a int. Please use int value");
-				echo json_encode($response);
-				return false;
-			}
-		}
-		return true;
+class Hydrate{
+	public static function hydrateProject($project, $request){
+		$request->requestForStepsOfProject($project);
+		$request->requestForMaterialsOfProject($project);
+		$request->requestForToolsOfProject($project);
 	}
 
-	public static function getObjectForId($id, $object, $response){
-		if($object != null){
-			return $object;
+	public static function hydrateWithClass($objectTab, $class, $request){
+		$connexion = Database::getInstance()->getConnexion();
+
+		$tabResult = $connexion->query($request->getQuery());
+		while($obj = $tabResult->fetchObject($class)){
+			$objectTab[] = $obj;
 		}
-		$response->setError(4202);
-		$response->setStatus(true);
-		$response->setArray(null);
-		$response->addMessage("This id $id doesn't exist");
-		echo json_encode($response);
-		return null;
-		
+
+		return $objectTab;
 	}
 }

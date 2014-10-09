@@ -127,14 +127,7 @@ class Save{
 	public function createStep($projectId, $base, $text){
 	    $path = Config::$IMAGE_PATH . $projectId;
 
-	    if (!file_exists($path)) {
-	        try{
-	            mkdir($path, 0775, true);
-	        }catch(Exception $e){
-	            var_dump($e);
-	            die;
-	        }
-	    }
+	    Tools::createFolder($path);
 
 	    //Save Step
 	    $this->query = "INSERT INTO `Step` (`path`, `text`, `projectId`) VALUES ('wait path', '" . $text . "', " . $projectId . ");";

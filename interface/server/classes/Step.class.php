@@ -98,5 +98,12 @@ class Step {
     public function setProjectId($projectId){
         $this->projectId = $projectId;
     }
+
+    public function createHTML(){
+        $html = "<img src='$this->path' height='300' width='300'>";
+        if($this->text != null)
+            $html .= "<p>$this->text</p>";
+        return $html;
+    }
 }
 ?>

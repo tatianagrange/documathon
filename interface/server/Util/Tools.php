@@ -58,4 +58,21 @@ class Tools
 	    return(ctype_digit(strval($input)));
 	}
 
+	public static function createFolder($path){
+		if (!file_exists($path)) {
+		    try{
+		        mkdir($path, 0775, true);
+		    }catch(Exception $e){
+		        var_dump($e);
+		        die;
+		    }
+		}
+	}
+
+	public static function generatePDF($html, $filename){
+		$mpdf = new mPDF('c'); 
+		$mpdf->SetDisplayMode('fullpage');
+		$mpdf->WriteHTML($html);
+		$mpdf->Output($filename, 'F');
+	}
 }

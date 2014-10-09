@@ -127,4 +127,26 @@ class Project {
         return $date->getTimestamp();
     }
 
+    public function createHTML(){
+        $html = "<h1>$this->name</h1>";
+        $authors = array();
+        foreach($this->steps as $key=>$step){
+            $stepNumber = $key+1;
+            $html .= "<h2>Etape $stepNumber</h2>";
+            $html .= $step->createHTML();
+            foreach($step->authors as $author){
+                $authors[$author->getId()] = $author;
+            }
+
+        }
+
+        $html .= "<h2>Auteurs</h2><ul>";
+        foreach($authors as $author){
+            $html .= "<li>" . $author->createHTML() . "</li>";
+        }
+        $html .= "</ul>";
+
+        return $html;
+    }
+
 }

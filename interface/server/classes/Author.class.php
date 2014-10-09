@@ -104,4 +104,13 @@ class Author {
 		$age = ($this->birth < 0) ? ( $t + ($this->birth * -1) ) : $t - $this->birth;
 		return floor($age/31536000);
 	}
+
+
+    public function createHTML(){
+        $html = "<p>$this->name";
+        if($this->birth != null)
+            $html .= " - " . $this->getAge();
+        $html .= "</p>";
+        return $html;
+    }
 }

@@ -113,12 +113,37 @@ class Response {
         $this->msg = "SUCCES";
     }
 
+    public function toError($error = 404){
+        $this->setStatus($error);
+        $this->setError(false);
+        $this->msg = "ERROR";
+    }
+
 
     /**************
     *  Functions  *
     ***************/
+    public function getForId($id, $function){
+        $id = htmlentities($id);
+        $this->toError();
+            
+        if(!Errors::checkIfIsInt(array($id), $this))
+            return;
+
+        $object = Errors::getObjectForId($id, Request::getInstance()->$function($id), $this);
+
+        if($object){
+            $this->toSuccess();
+            return $object;
+        }
+
+        return null;
+
+    }
+
     public function makeResponseForGetId($id, $function, $isCreation = false){
         $id = htmlentities($id);
+        $this->toError();
             
         if(!$isCreation &&!Errors::checkIfIsInt(array($id), $this))
             return;
@@ -137,7 +162,7 @@ class Response {
     }
 
     public function makeResponseForAdd($method, $what, $projectId, $id= null, $base = null, $text = null){
-        $response = new Response(null, 4210, true);
+        $this->toError(4210);
 
         $projectId = htmlentities($projectId);
         $what = htmlentities($what);
@@ -149,15 +174,15 @@ class Response {
         switch($what){
             case 'step':
                 $text = htmlentities($text);
-                $response->makeResponseForCreateStep($method, $base, $text, $projectId);
+                $this->makeResponseForCreateStep($method, $base, $text, $projectId);
                 break;
             case 'tool':
             case 'material':
-                $response->makeResponseForAddToProject($projectId,$what,$id, $method);
+                $this->makeResponseForAddToProject($projectId,$what,$id, $method);
                 break;
             default:
-                $response = new Response(null,4206,true);
-                $response->addMessage("This action doesn't exist.");
+                $this->toError(4206);
+                $this->addMessage("This action doesn't exist.");
                 break;
         }
 
@@ -169,8 +194,7 @@ class Response {
             case "GET":
                 $state = Save::getInstance()->addToProject($projectId, $what, $id);
                 if($state != null){
-                    $this->setStatus($state);
-                    $this->setError(true);
+                    $this->toError($state);
                     $this->addMessage(($state == 4208) ? "The id $id is already associated to the project $projectId" : "This id doesn't exist");
                 }
                 else{
@@ -179,8 +203,7 @@ class Response {
                 }
                 break;
             case "POST":
-                $this->setStatus(4209);
-                $this->setError(true);
+                $this->toError(4209);
                 $this->addMessage("The action $what is a GET request");
                 break;
         }
@@ -189,13 +212,12 @@ class Response {
     public function makeResponseForCreateStep($method, $base = null, $text = null, $projectId = null){
         switch($method){
             case "GET":
-                $this->setStatus(4207);
-                $this->setError(true);
+                $this->toError(4207);
                 $this->addMessage("The action step have to be posted with 'base64' parameter");
                 break;
             case "POST":
                 if($base == null){
-                    $this->setStatus(4207);
+                    $this->toError(4207);
                     $response->addMessage("The action step have to be posted with 'base64' parameter");
                 }else{
                     if($text = null)

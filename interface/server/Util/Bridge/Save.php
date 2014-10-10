@@ -77,6 +77,7 @@ class Save{
 		$this->query = "INSERT INTO `$table` (`$field`, `projectId`) VALUES ($id, $projectId);";
 		try{
 			$this->create();
+			$this->generatePDFOnSave($projectId);
 		}
 		catch(Exception $e){
 			return $e->getCode();
@@ -88,6 +89,9 @@ class Save{
 		$this->query = "INSERT INTO `Step_has_Author` (`stepId`, `authorId`) VALUES ($stepId, $authorId);";
 		try{
 			$this->create();
+			$step = Request::getInstance()->requestForStep($stepId);
+			if($step != null)
+				$this->generatePDFOnSave($step->getProjectId());
 		}
 		catch(Exception $e){
 			return $e->getCode();
@@ -121,7 +125,11 @@ class Save{
 		//Save in base
 		$this->query = "INSERT INTO Project (name, start, date) VALUES ('" . $projectName . "', '" . $date . "', '" . $date . "')";
 		$connexion = Database::getInstance()->pdoExec($this->query);
-	    return $connexion->lastInsertId(); 
+		$id = $connexion->lastInsertId();
+
+		$this->generatePDFOnSave($id);
+
+	    return $id; 
 	}
 
 	public function createStep($projectId, $base, $text){
@@ -146,6 +154,8 @@ class Save{
 	    $this->query = "UPDATE Step SET path='" . $realPath . "' WHERE id=" . $id;
 	    $connexion = Database::getInstance()->pdoExec($this->query);
 
+	    $this->generatePDFOnSave($projectId);
+
 	    return $id;
 
 	}
@@ -164,5 +174,11 @@ class Save{
 			throw $e;
 		}
 	    return $connexion->lastInsertId(); 
+	}
+
+	private function generatePDFOnSave($projectId){
+		$object = Request::getInstance()->requestForProject($projectId);
+		if($object != null)
+			Tools::generatePDF($object);
 	}
 }

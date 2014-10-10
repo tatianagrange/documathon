@@ -92,6 +92,11 @@ class Request{
 		return $this->requestFor('Author');
 	}
 
+	public function requestForStep($id){
+		$this->query = "SELECT * FROM Step WHERE id=$id";
+		return $this->requestFor('Step');
+	}
+
 	public function requestForTool($id){
 		$this->query = "SELECT * FROM Tool WHERE id=$id";
 		return $this->requestFor('Tool');

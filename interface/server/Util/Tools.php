@@ -69,7 +69,19 @@ class Tools
 		}
 	}
 
-	public static function generatePDF($html, $filename){
+	public static function generatePDF($object){
+		$id = $object->getId();
+		Tools::createFolder(Config::$IMAGE_PATH . "$id");
+		$pdf = Config::$IMAGE_PATH . "$id/project.pdf";
+		if(!file_exists($pdf)){
+			self::generateMPDF($object->createHTML(),$pdf);
+		}
+		$response = new Response(Config::$IMAGE_SERVER."/$id/project.pdf");
+		$response->addMessage("The field datas contain the url of the pdf");
+		return $response;
+	}
+
+	private static function generateMPDF($html, $filename){
 		$mpdf = new mPDF('c'); 
 		$mpdf->SetDisplayMode('fullpage');
 		$mpdf->WriteHTML($html);

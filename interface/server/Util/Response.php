@@ -156,6 +156,7 @@ class Response {
         }
 
         if($object){
+            $this->toSuccess();
             $this->setArray($object);
             echo json_encode($this);
         }

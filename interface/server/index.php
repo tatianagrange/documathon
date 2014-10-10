@@ -46,15 +46,7 @@
 			$response = new Response(null);
 			$object = $response->getForId($projectId, "requestForProject");
             if($object){
-                $id = $object->getId();
-				Tools::createFolder(Config::$IMAGE_PATH . "$id");
-				$pdf = Config::$IMAGE_PATH . "$id/project.pdf";
-				if(!file_exists($pdf)){
-					Tools::generatePDF($object->createHTML(),$pdf);
-				}
-				$response = new Response(Config::$IMAGE_SERVER."/$id/project.pdf");
-				$response->addMessage("The field datas contain the url of the pdf");
-				echo json_encode($response);
+				echo json_encode(Tools::generatePDF($object));
 			}
 		});
 

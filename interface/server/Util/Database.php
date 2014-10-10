@@ -88,7 +88,8 @@ class Database{
 
 		try
 		{
-		    $this->connexion = new PDO( $dns, $utilisateur, $motDePasse );
+            $this->connexion = new PDO( $dns, $utilisateur, $motDePasse );
+            $this->connexion->exec("SET CHARACTER SET utf8");
 		    $this->connexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
 		}
 		catch(Exception $e)

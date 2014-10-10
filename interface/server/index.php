@@ -45,9 +45,9 @@
 		$app->get('/:projectId/pdf', function ($projectId){
 			$response = new Response(null);
 			$object = $response->getForId($projectId, "requestForProject");
-			if($object){
+            if($object){
+                $id = $object->getId();
 				Tools::createFolder(Config::$IMAGE_PATH . "$id");
-				$id = $object->getId();
 				$pdf = Config::$IMAGE_PATH . "$id/project.pdf";
 				if(!file_exists($pdf)){
 					Tools::generatePDF($object->createHTML(),$pdf);

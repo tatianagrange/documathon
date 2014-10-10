@@ -107,7 +107,7 @@ class Author {
 
 
     public function createHTML(){
-        $html = "<p>$this->name";
+        $html = "<p>" . utf8_encode($this->name);
         if($this->birth != null)
             $html .= " - " . $this->getAge();
         $html .= "</p>";

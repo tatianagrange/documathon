@@ -101,8 +101,10 @@ class Step {
 
     public function createHTML(){
         $html = "<img src='$this->path' height='300' width='300'>";
-        if($this->text != null)
-            $html .= "<p>$this->text</p>";
+        if($this->text != null){
+            $tmp = utf8_encode($this->text);
+            $html .= "<p>$tmp</p>";
+        }
         return $html;
     }
 }

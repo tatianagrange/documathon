@@ -154,6 +154,12 @@ class Save{
 	    $this->query = "UPDATE Step SET path='" . $realPath . "' WHERE id=" . $id;
 	    $connexion = Database::getInstance()->pdoExec($this->query);
 
+	    //Update Project update field
+	    $datetime = new DateTime();
+		$date = date("Y-m-d H:i:s", $datetime->getTimestamp());
+	    $this->query = "UPDATE Project SET date='" . $date . "' WHERE id=" . $projectId;
+	    $connexion = Database::getInstance()->pdoExec($this->query);
+
 	    $this->generatePDFOnSave($projectId);
 
 	    return $id;

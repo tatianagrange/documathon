@@ -73,6 +73,9 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 
+
+
+
 /* ************************ */
 /*          Server          */
 /* ************************ */
@@ -119,23 +122,27 @@ io.on('connection', function (socket) {
         serialProto.saveStep(table);
     });
 
-    socket.on('sendImageTest',function(mBase64){
-        //Local
-        //var mUrl = "http://documathon.server:8888/projects/9/addStep/youpiiii";
+    // Protocole ----------------------------------------------
+    socket.on('log',function(){
+        serialProto.startProtocol("log{\"id\": 6,\"name\": \"Faclab\",\"birth\": \"\"}");
+    });
 
-        //Online
-        var mUrl = "http://api.documathon.tgrange.com/projects/10/addStep/youpiiii";
-        request.post(
-            mUrl,
-            { form: { 'base64': mBase64 } },
-            function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    console.log(body);
-                }else{
-                    console.log(error);
-                }
-            }
-        );
+    socket.on('proj',function(){
+        serialProto.startProtocol("prj{\"id\": 1,\"name\": \"Enceintes\"}");
+    });
+
+    socket.on('val',function(){
+        serialProto.startProtocol("btnval");
+    });
+
+    socket.on('shr',function(){
+        serialProto.startProtocol("shr");
+    });
+    // ----------------------------------------------  Protocole
+   
+
+    socket.on('sendImageTest',function(mBase64){
+
     });
 
 

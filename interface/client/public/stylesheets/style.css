@@ -71,6 +71,10 @@ footer{
   height: 50pt;
 }
 
+/*.mouseBtn{
+  display:none;
+}*/
+
 .left {
   float: left;
   width: 50%;

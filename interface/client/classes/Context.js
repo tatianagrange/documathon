@@ -31,6 +31,9 @@ exports.Context = Context = function() {
 /* *************************** */
 Context.prototype.makeProject = function(json){
 	this.myProject = new Project();
+	if(this.actualStep == null){
+		this.actualStep = new Step();
+	}
     return this.myProject.hydrateWithJson(json);
 }
 

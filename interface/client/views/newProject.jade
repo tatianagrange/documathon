@@ -6,4 +6,6 @@ main
 				p(class="name")
 					input(name="name", type="text", class="validate[required,custom[onlyLetter],length[0,100]] feedback-input", placeholder="Nom du projet", id="formId")
 	p Appuyer sur le bouton valider pour passer à la suite
+	div(class="mouseBtn")
+		include ./btn_validate.jade
 	script

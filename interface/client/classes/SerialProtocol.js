@@ -3,6 +3,7 @@
 /* ********************************* */
 var serialport = require("serialport");
 var SerialPort = serialport.SerialPort;
+var util = require('../classes/Util');
 
 
 /* **************************** */
@@ -33,7 +34,7 @@ exports.SerialProtocol = SerialProtocol = function(socket, jade) {
     /////////////////////////////////////////
     //          SerialPort Config          //
     /////////////////////////////////////////
-    this.sp = new SerialPort("/dev/tty.usbmodem1421", {
+    this.sp = new SerialPort("/dev/tty.usbserial-A600eo9b", {
         parser: serialport.parsers.readline("\n"),
         baudrate: 9600
     });
@@ -43,7 +44,7 @@ exports.SerialProtocol = SerialProtocol = function(socket, jade) {
 /**
 *   This function is call to start the protocol.
 *   It is not realy a constructor, but it is necessary to 
-*   Call that function to strat the protocol gestion.
+*   Call that function to start the protocol gestion.
 *   
 *   This function is call each time there is someting on the serial port
 */
@@ -108,11 +109,11 @@ SerialProtocol.prototype.saveStep= function(table){
     this.myContext.actualStep.text = table[1];
     this.myContext.saveActualStep();
 
-    var html = this.jade.renderFile('views/stepCam.jade');
+    var html = this.jade.renderFile('views/stepCam.jade', {dev: util.isDev });
     this.socket.emit('loadDatas', html);
     this.socket.emit('startCam');
+    this.emitSuccess("Etape sauvegardée");
 
-    console.log(this.myContext.myProject);
     this.myContext.actualStep = new Step();
 }
 
@@ -142,7 +143,7 @@ SerialProtocol.prototype.instructionLogin = function(data){
     var html = null;
     var error = this.myContext.makeAuthor(data);
     if(error == 1){
-        html = this.jade.renderFile('views/project.jade', {name:this.myContext.myAuthor.name});
+        html = this.jade.renderFile('views/project.jade', {name:this.myContext.myAuthor.name, dev: util.isDev });
         this.myContext.documentationStep = 1;
     }
 
@@ -161,7 +162,7 @@ SerialProtocol.prototype.instructionProject = function(data){
     var error = this.myContext.makeProject(data);
     if(error == 1){
         this.socket.emit('startCam');
-        html = this.jade.renderFile('views/stepCam.jade');
+        html = this.jade.renderFile('views/stepCam.jade', {name:this.myContext.myAuthor.name, dev: util.isDev });
         this.myContext.documentationStep = 3;
     }
     else{
@@ -190,7 +191,25 @@ SerialProtocol.prototype.instructionButton = function(data){
 SerialProtocol.prototype.instructionShare = function(data){
     switch(this.myContext.documentationStep){
         case 3:
-            this.emitSuccess("En cours d'envoi");
+            var mUrl = "http://api.documathon.tgrange.com/projects/";
+            mUrl += this.myContext.myProject.id;
+            mUrl += "/add/step";
+
+            var steps = this.myContext.myProject.steps;
+            for(var i= 0; i < steps.length; i++)
+            {
+                request.post(
+                    mUrl,
+                    { form: { 'base64': steps[i].base, 'text': steps[i].base } },
+                    function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+                            
+                        }else{
+                            
+                        }
+                    }
+                );   
+            }
             break;
         default:
             this.emitWarning("Valide ta photo et ton étape avant de partager ton projet!");
@@ -236,17 +255,3 @@ SerialProtocol.prototype.instructionValidate = function(data){
             break;
     }
 }
-
-// function decodeBase64Image(dataString) {
-//     var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
-//     response = {};
-
-//     if (matches.length !== 3) {
-//     return new Error('Invalid input string');
-//     }
-
-//     response.type = matches[1];
-//     response.data = new Buffer(matches[2], 'base64');
-
-//     return response;
-// }

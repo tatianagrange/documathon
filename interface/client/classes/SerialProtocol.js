@@ -34,7 +34,7 @@ exports.SerialProtocol = SerialProtocol = function(socket, jade) {
     /////////////////////////////////////////
     //          SerialPort Config          //
     /////////////////////////////////////////
-    this.sp = new SerialPort("/dev/tty.usbserial-A600eo9b", {
+    this.sp = new SerialPort("/dev/tty.usbmodem1411", {
         parser: serialport.parsers.readline("\n"),
         baudrate: 9600
     });

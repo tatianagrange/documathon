@@ -140,7 +140,7 @@
 				}
 				else
 				{
-					$project = Request::requestForProjectsAfter($date);
+					$project = Request::getInstance()->requestForProjectsAfter($date);
 					if(count($project) != 0){
 						$response = new Response($project);
 					}

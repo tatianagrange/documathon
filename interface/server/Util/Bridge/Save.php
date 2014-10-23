@@ -139,7 +139,7 @@ class Save{
 
 	    //Save Step
 	    $this->query = "INSERT INTO `Step` (`path`, `text`, `projectId`) VALUES ('wait path', '" . $text . "', " . $projectId . ");";
-	   	$connexion = Database::getInstance()->pdoExec($this->query);
+        $connexion = Database::getInstance()->pdoExec($this->query);
 
 	    //Get id after save step
 	    $id = $connexion->lastInsertId();
@@ -151,8 +151,14 @@ class Save{
 	    Tools::base64ToJpeg($base,$image);
 
 	    //Update Step in base
-	    $this->query = "UPDATE Step SET path='" . $realPath . "' WHERE id=" . $id;
+        $this->query = "UPDATE Step SET path='" . $realPath . "' WHERE id=" . $id;
 	    $connexion = Database::getInstance()->pdoExec($this->query);
+
+        $datetime = new DateTime();
+        $date = date("Y-m-d H:i:s", $datetime->getTimestamp());
+        
+        $this->query = "UPDATE Project SET date='" . $date . "' WHERE id=" . $projectId;
+        $connexion = Database::getInstance()->pdoExec($this->query);
 
 	    $this->generatePDFOnSave($projectId);
 
@@ -177,8 +183,8 @@ class Save{
 	}
 
 	private function generatePDFOnSave($projectId){
-		$object = Request::getInstance()->requestForProject($projectId);
+        $object = Request::getInstance()->requestForProject($projectId);
 		if($object != null)
-			Tools::generatePDF($object);
+			Tools::generatePDF($object,true);
 	}
 }

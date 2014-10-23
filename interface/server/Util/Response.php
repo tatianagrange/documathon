@@ -169,7 +169,7 @@ class Response {
         $what = htmlentities($what);
         $id = htmlentities($id);
 
-        if(!Errors::checkIfIsInt(array($projectId, $id), $response))
+        if(!Errors::checkIfIsInt($id == null ? array($projectId) : array($projectId, $id), $this))
             return;
 
         switch($what){
@@ -187,7 +187,7 @@ class Response {
                 break;
         }
 
-        echo json_encode($response);
+        echo json_encode($this);
     }
 
     public function makeResponseForAddToProject($projectId, $what, $id, $method){
@@ -219,13 +219,13 @@ class Response {
             case "POST":
                 if($base == null){
                     $this->toError(4207);
-                    $response->addMessage("The action step have to be posted with 'base64' parameter");
+                    $this->addMessage("The action step have to be posted with 'base64' parameter");
                 }else{
-                    if($text = null)
+                    if($text == null)
                         $text = "";
                     $this->toSuccess();
-                    $this->datas = Save::getInstance()->createStep($id, $base, $text);;
-                    $response->addMessage("The data is the id of the project");
+                    $this->datas = Save::getInstance()->createStep($projectId, $base, $text);
+                    $this->addMessage("The data is the id of the step");
                 }
                 break;
         }

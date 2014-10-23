@@ -51,8 +51,11 @@ class Tools
 	}
 
 	public static function base64ToJpeg($base64, $file) {
-		file_put_contents($file, base64_decode($base64));
-	}
+        $ifp = fopen($file, "wb"); 
+        $data = explode(',', $base64);
+        fwrite($ifp, base64_decode($data[1])); 
+        fclose($ifp);
+    }
 
 	public static function isInteger($input){
 	    return(ctype_digit(strval($input)));
@@ -69,11 +72,12 @@ class Tools
 		}
 	}
 
-	public static function generatePDF($object){
+	public static function generatePDF($object, $erase = false){
 		$id = $object->getId();
 		Tools::createFolder(Config::$IMAGE_PATH . "$id");
 		$pdf = Config::$IMAGE_PATH . "$id/project.pdf";
-		if(!file_exists($pdf)){
+        
+        if(!file_exists($pdf) || $erase){
 			self::generateMPDF($object->createHTML(),$pdf);
 		}
 		$response = new Response(Config::$IMAGE_SERVER."/$id/project.pdf");

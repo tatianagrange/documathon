@@ -114,7 +114,7 @@ class Request{
 
 	public function requestForProjectsAfter($date){
 		$this->query = "SELECT * FROM Project WHERE UNIX_TIMESTAMP(date)>" . $date;
-		return $this->requestForManyProjects();
+        return $this->requestForManyProjects();
 	}
 
 	public function requestForProject($id){

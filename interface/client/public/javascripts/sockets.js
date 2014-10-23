@@ -46,6 +46,13 @@ socket.on('validateText', function(){
 	base64 = null;
 }); 
 
+//The server actualise the step which are already send or not.
+socket.on('oneStepAdd', function(){
+	actualStepsNumber++;
+	$("#actualStepsNumber").html(actualStepsNumber);
+}); 
+actualStepsNumber
+
 // Add a material to the optional text area
 socket.on('updateMat', function(mats){
 	var matsString = "";

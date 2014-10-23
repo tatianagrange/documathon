@@ -9,4 +9,8 @@ router.get('/', function(req, res) {
 	res.render('index', { title: 'Documathon', dev: util.isDev });
 });
 
+router.get('/test', function(req, res) {
+	res.render('step_load', { title: 'Test', dev: util.isDev });
+});
+
 module.exports = router;

@@ -76,7 +76,7 @@ On trouve également dans la boîte la carte arduino, la carte nfc, deux breadbo
 ![V0.1 du documathon - intérrieur - Carte](http://goo.gl/tpgVMo)
 
 
-####A prendre en compte pour la V0.1
+####A prendre en compte pour la V1
 
 * La carte Arduino sera branchée sur le Raspberry, mais une sortie pour faire passer un cable supplémentaire pourrait être utile.
 * Remonter la sortie usb, conçu à l'envers.
@@ -99,81 +99,14 @@ Voici un test du système d'attache des boutons/leds sur du Plexi Blanc de 3mm:
 ![V0.2 - Bouton](http://goo.gl/Jq5Ooa) 
 ![V0.2 - Bouton](http://goo.gl/GaooIX) 
 
-####Conception
-#####L'exterrieur
-Le documathon a été rapetitie, pour que la largeur soit, à peu de chose prêt, celle d'un ordinateur 13 pouces.
-
-![V0.2 - Boîte et ordinateur](http://goo.gl/alxIcJ)
-
-Elle fait désormais 20x3cm et est épaisse de 5 centimètres.
-
-des boutons de directions (haut et bas) ont été ajouté afin de pouvoir faire des sélections à l'écran. Un bouton aide a également été placé en haut à droite. Il remplace la led d'information.
-
-#####L'intérieur
-Tous les branchements ont été mit en place. Le montage est maintenant fonctionnel.
-
-![V0.2 - Intérieur](http://goo.gl/VoeRp5)
-
-Si la Raspbery et le hub ne sont pas encore maintenu dans la boîte, cette fois la carte Arduino et la carte NFC ont été fixé, directement sur le couvercle du Documathon.
-
-Deux petites breadboards permettent de relier chaque composant à la carte Arduino.
-
-Les deux cartes sont fixées au moyen de boulons, collés au couvercle, et de petites vis, vissées dedans.
-
-![V0.2 - Carte NFC fixée](http://goo.gl/XO05S6)
-
-La même méthode de support de boutons que sur la V0.1 a été appliqué.
-
-![V0.2 - Boutons](http://goo.gl/of8U7v)
-
-####A prendre en compte pour la V0.2
-* Espacer les boutons Led, trop proches.
-* Retirer le bouton d'aide, qui ne sert pas.
-* Ne pas coller les boulons avec les vis... La colle remonte et on se retrouve avec une vis immobile.
-* Remonter légèrement la hauteur de la boîte, pour laisser la place aux fils.
-* Faire une ouverture derière, permettant de soulever le couvercle sans problèmes.
-* Agrandir le hub USB.
 
 ##La boîte
-Les fichiers de ce dossier son préfixé par la version de la boîte dessinée. Ils sont également rangé dans le dossier correspondant
-
+Les fichiers de ce dossier son préfixé par la version de la boîte dessinée.
 ###V0.1
 * Box : Il s'agit de tous les côtés de la boites et des cales nécessaires à tenir le Rasp et le hub usb dans la boite.
 * Box - Part 1 & 2 : Le fichier original de la boite est conçu sur une planche plus grande que celles disponnibles au Faclab. Ces deux fichiers sont réorganisés de façon à tennir sur des planche de 60x40cm
 * Button fix : Les boutons doivent être soudé afin d'être maintenus et reliés à la carte arduino. Il s'agit ici du modèle de l'écartement des pattes.
 * Cales et boutons : Ce sont les cales à mettre entre la planche du dessus et les boutons.
-
-###V0.2
-* V0.2 - Box decoupe - Support.svg: Contient les supports de boutons.
-* V0.2 - Box decoupe.svg: Découpe de la boite en elle même
-* V0.2 - Box.png: Image de la boite.
-* V0.2 - Box.svg: C'est le fichier dont vient *V0.2 - Box decoupe.svg*
-* V0.2 - Cales et boutons: Support pour un seul bouton
-
-###V0.3
-
-####Le dossier
-* V0.3 - Box: Découpe de la boîte dans le plexi blanc
-* V0.3 - Buttons fixation: Toutes les fixations dans la boîte
-* V0.3 - Buttons: Les boutons à découper dans le plexi noir
-
-####Assemblage
-#####Le Cadre et le dessous
-La partie la plus simple est celle qui consiste à assembler le cadre et le dessous de la boîte. Il suffit de positionner chaque côté de cette façon:
-
-![V0.3 - Assemblage](http://goo.gl/5WuFaj)
-
-La planche du cadre vierge de tout trait de découpe est la face avant.
-
-#####Assemblage du couvercle
-![V0.3 - Assemblage](http://goo.gl/Luiwbd )
-Le symbole NFC n'est pas un bouton, tout comme les signes twitter, facebook et print. Sur la V0.2, le point d'interrogation dans une bulle de dialogue n'en est pas un non plus.
-
-On trouve aussi deux ronds noirs, sur la V0.3, qui symbolisent la possibilité d'ajouter des boutons supplémentaires.
-
-Dans les prototype, le tout est collé à l'arrière avec du scotch et une très légère goutte de colle.
-
-![V0.3 - Assemblage](http://goo.gl/4gr3k1)
 
 ##Arduino
 Il y a plusieurs dossiers dans ce dossier.

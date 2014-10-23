@@ -4,6 +4,7 @@
 var serialport = require("serialport");
 var SerialPort = serialport.SerialPort;
 var util = require('../classes/Util');
+var request = require("request");
 
 
 /* **************************** */
@@ -196,20 +197,21 @@ SerialProtocol.prototype.instructionShare = function(data){
             mUrl += "/add/step";
 
             var steps = this.myContext.myProject.steps;
-            for(var i= 0; i < steps.length; i++)
-            {
-                request.post(
-                    mUrl,
-                    { form: { 'base64': steps[i].base, 'text': steps[i].base } },
-                    function (error, response, body) {
+
+            for (var i = 0 ; i < 20 ; i++) {
+                this.sendStep(
+                    mUrl, 
+                    { 'base64': steps[0].base, 'text': steps[0].text }, 
+                    function(error, response, body) {
                         if (!error && response.statusCode == 200) {
-                            
+                            ICI => this.sp.socket.emit('oneStepAdd');
                         }else{
-                            
+                            console.log("pas ok");
                         }
-                    }
-                );   
+                    }.bind({sp: this})
+                )
             }
+
             break;
         default:
             this.emitWarning("Valide ta photo et ton étape avant de partager ton projet!");
@@ -254,4 +256,8 @@ SerialProtocol.prototype.instructionValidate = function(data){
             this.socket.emit('validateText');
             break;
     }
+}
+
+SerialProtocol.prototype.sendStep = function(url, inForm, callback){
+    request.post(url, { form:  inForm }, callback);   
 }

@@ -89,6 +89,7 @@ var io = require('socket.io').listen(server);
 io.on('connection', function (socket) {
     var SerialProtocol = require("./classes/SerialProtocol").SerialProtocol;
     serialProto = new SerialProtocol(socket,jade);
+    
     serialProto.sp.on("open", function(){
         serialProto.sp.on('data', function(data){
             serialProto.startProtocol(data);
@@ -122,6 +123,7 @@ io.on('connection', function (socket) {
         serialProto.saveStep(table);
     });
 
+
     // Protocole ----------------------------------------------
     socket.on('log',function(){
         serialProto.startProtocol("log{\"id\": 6,\"name\": \"Faclab\",\"birth\": \"\"}");
@@ -139,11 +141,6 @@ io.on('connection', function (socket) {
         serialProto.startProtocol("shr");
     });
     // ----------------------------------------------  Protocole
-   
-
-    socket.on('sendImageTest',function(mBase64){
-
-    });
 
 
     function writeAndDrain (data, callback) {

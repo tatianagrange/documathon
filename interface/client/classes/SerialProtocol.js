@@ -211,11 +211,11 @@ SerialProtocol.prototype.instructionShare = function(data){
                     { 'base64': steps[0].base, 'text': steps[i].text }, 
                     function(error, response, body) {
                         if (!error && response.statusCode == 200) {
-                            this.sp.socket.emit('oneStepAdd', steps.length);
+                            this.sp.saveAuthorForStep(body, this.author, this.sp, this.length);
                         }else{
                             console.log("Pas ok");
                         }
-                    }.bind({sp: this})
+                    }.bind({sp: this, author: this.myContext.myAuthor, length: steps.length})
                 )
             }
 
@@ -267,4 +267,21 @@ SerialProtocol.prototype.instructionValidate = function(data){
 
 SerialProtocol.prototype.sendStep = function(url, inForm, callback){
     request.post(url, { form:  inForm }, callback);   
+}
+
+
+SerialProtocol.prototype.saveAuthorForStep = function(mBody, author, sp, length){
+    var json = JSON.parse(mBody);
+    var id = json.datas;
+    var url2 = "http://api.documathon.tgrange.com/authors/" + author.id + "/contribute/" + id;
+    console.log(url2);
+    
+    request({
+        url: url2,
+        json: true
+    }, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            sp.socket.emit('oneStepAdd', length);
+        }
+    });
 }

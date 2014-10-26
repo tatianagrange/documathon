@@ -182,7 +182,7 @@
 
 		$app->get('/:id/contribute/:stepId', function($id,$stepId){
 			//Get projects
-			$state = Request::addAuthorToStep($id,$stepId);
+			$state = Save::getInstance()->addAuthorToStep($id,$stepId);
 
 
 			if($state != null){

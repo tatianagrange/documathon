@@ -192,21 +192,28 @@ SerialProtocol.prototype.instructionButton = function(data){
 SerialProtocol.prototype.instructionShare = function(data){
     switch(this.myContext.documentationStep){
         case 3:
+            //Get all steps 
+            var steps = this.myContext.myProject.steps;
+
+            //Load new page
+            var html = this.jade.renderFile('views/step_load.jade', {dev: util.isDev, totalStep: steps.length});
+            this.socket.emit('loadDatas', html);
+            this.socket.emit('stopCam');
+
+            //Send all steps
             var mUrl = "http://api.documathon.tgrange.com/projects/";
             mUrl += this.myContext.myProject.id;
             mUrl += "/add/step";
 
-            var steps = this.myContext.myProject.steps;
-
-            for (var i = 0 ; i < 20 ; i++) {
+            for (var i = 0 ; i < steps.length ; i++) {
                 this.sendStep(
                     mUrl, 
-                    { 'base64': steps[0].base, 'text': steps[0].text }, 
+                    { 'base64': steps[0].base, 'text': steps[i].text }, 
                     function(error, response, body) {
                         if (!error && response.statusCode == 200) {
-                            ICI => this.sp.socket.emit('oneStepAdd');
+                            this.sp.socket.emit('oneStepAdd', steps.length);
                         }else{
-                            console.log("pas ok");
+                            console.log("Pas ok");
                         }
                     }.bind({sp: this})
                 )

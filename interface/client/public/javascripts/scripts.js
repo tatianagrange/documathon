@@ -84,9 +84,20 @@ function showPhoto(isShowing){
 
 function startCamAfterWait(wait){
 	setTimeout(function()
-            { 
-            	var constraints = {video: true};
-            	getUserMedia(constraints, successCallback, errorCallback); 
-            }
+        { 
+        	var constraints = {video: true};
+        	getUserMedia(constraints, successCallback, errorCallback); 
+        }
     , wait);
+}
+
+ 
+function reloadInXSeconds(){
+	max_time--;
+	document.getElementById('countdown').innerHTML = max_time;
+	if(max_time == 0){
+		clearInterval(cinterval);
+		console.log("ok");
+		window.location.replace("/");
+	}
 }

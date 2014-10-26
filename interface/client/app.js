@@ -123,6 +123,11 @@ io.on('connection', function (socket) {
         serialProto.saveStep(table);
     });
 
+    socket.on('allReceive',function(){
+        var html = jade.renderFile('views/step_reload.jade');
+        socket.emit('loadDatas', html);
+    });
+
 
     // Protocole ----------------------------------------------
     socket.on('log',function(){

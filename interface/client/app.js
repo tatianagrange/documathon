@@ -7,6 +7,7 @@ var jade = require('jade');
 var routes = require('./routes/index');
 var fs = require('fs');
 var request = require("request");
+var logger = require('morgan');
 
 
 /* ************************** */
@@ -27,6 +28,7 @@ var file = new(static.Server)();
 var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 

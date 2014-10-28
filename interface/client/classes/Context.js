@@ -11,6 +11,8 @@ var MaterialAndTool = require('./MaterialAndTool.js').MaterialAndTool;
 var Step = require('./Step.js').Step;
 var actualStep;
 var myProject;
+var twitter;
+var facebook;
 
 
 /* ***************************** */
@@ -23,6 +25,8 @@ exports.Context = Context = function() {
   	this.myAuthor = null;
   	this.myProject = null;
   	this.actualStep = null;
+  	this.facebook = false;
+  	this.twitter = false;
 };
 
 

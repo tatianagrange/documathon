@@ -7,6 +7,11 @@
   },
   "dependencies": {
     "express": "~4.2.0",
+    "request": "~2.47.0",
+    "serialport": "~1.4.6",
+    "node-static": "~0.7.6",
+    "socket.io": "~1.2.0",
+    "temboo": "~1.7.7",
     "static-favicon": "~1.0.0",
     "morgan": "~1.0.0",
     "cookie-parser": "~1.0.1",

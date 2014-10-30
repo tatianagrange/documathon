@@ -72,7 +72,7 @@ module.exports = app;
 /* ************************ */
 /*          Server          */
 /* ************************ */
-var server = app.listen(3000, function() {
+var server = app.listen(8888, "cestdoncvrai.fr", function() {
     console.log('Listening on port %d', server.address().port);
 });
 
@@ -83,18 +83,18 @@ io.on('connection', function (socket) {
     var SerialProtocol = require("./classes/SerialProtocol").SerialProtocol;
     serialProto = new SerialProtocol(socket,jade);
     
-    serialProto.sp.on("open", function(){
+    /*serialProto.sp.on("open", function(){
         serialProto.sp.on('data', function(data){
             serialProto.startProtocol(data);
         });
-    });
+    });*/
     
-    socket.on('disconnect',function(){
+    /*socket.on('disconnect',function(){
         console.log("Client déconecté");
         serialProto.sp.close(function(){
             console.log("SerialPort close");
         });
-    });
+    });*/
 
     socket.on('returnField',function(field){
         var url = "http://api.documathon.tgrange.com/projects/create/" + field;

@@ -1,2 +1,2 @@
-var isDev = false;
+var isDev = true;
 exports.isDev = isDev;

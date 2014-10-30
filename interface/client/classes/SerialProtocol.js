@@ -37,7 +37,7 @@ exports.SerialProtocol = SerialProtocol = function(socket, jade) {
     /////////////////////////////////////////
     //          SerialPort Config          //
     /////////////////////////////////////////
-    this.sp = new SerialPort("/dev/tty.usbmodem14141", {
+    this.sp = new SerialPort("/dev/tty.usbmodem1411", {
         parser: serialport.parsers.readline("\n"),
         baudrate: 9600
     });
@@ -169,7 +169,7 @@ SerialProtocol.prototype.instructionProject = function(data){
         this.myContext.documentationStep = 3;
     }
     else{
-        html = this.jade.renderFile('views/newProject.jade');
+        html = this.jade.renderFile('views/newProject.jade', {dev: util.isDev });
         this.myContext.documentationStep = 2;
     }
 

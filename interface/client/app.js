@@ -97,7 +97,7 @@ io.on('connection', function (socket) {
     });
 
     socket.on('returnField',function(field){
-        var url = "http://api.documathon.tgrange.com/projects/create/project/" + field;
+        var url = "http://api.documathon.tgrange.com/projects/create/" + field;
        
         request({
             url: url,

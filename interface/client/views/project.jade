@@ -1,2 +1,4 @@
 main
 	p Bonjour #{name}. Passe le badge de ton projet sur le symbole NFC
+	if (dev)
+		a(id="button-blue", onclick="socket.emit('proj');") Project

@@ -1,11 +1,17 @@
 main
+	if (dev)
+		a(id="button-blue", onclick="socket.emit('shr');") Share
+
 	div(id="takePhoto")
 		video
 		canvas(style="display:none;")
 		p(id="camText") Appuie sur le bouton <strong>valider</strong> pour prendre la photo.
+		include ./btn_smallValidate.jade
+
 	div(id="askPhoto", style="display:none;")
 		img
 		include ./askValidate.jade
+
 	div(id="takeText", style="display:none;")
 		div(id="form-main")
 			div(id="form-div")
@@ -20,5 +26,6 @@ main
 						p
 							| Continuer
 							include ./btn_smallValidate.jade
+
 	script(type='text/javascript').
 		var video = document.querySelector('video');

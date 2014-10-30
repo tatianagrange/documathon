@@ -25,7 +25,6 @@ Step.prototype.addMaterial = function(mat){
 		this.materials = new Array();
 	}
 
-
 	for(var index in this.materials) { 
 		var locMat = this.materials[index];
 		if(locMat.id == mat.id){

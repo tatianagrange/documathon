@@ -3,14 +3,11 @@
 /* **************************** */
 var express = require('express');
 var path = require('path');
-var favicon = require('static-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
 var jade = require('jade');
 var routes = require('./routes/index');
 var fs = require('fs');
 var request = require("request");
+var logger = require('morgan');
 
 
 /* ************************** */
@@ -31,11 +28,7 @@ var file = new(static.Server)();
 var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-app.use(favicon());
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 
@@ -73,6 +66,9 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 
+
+
+
 /* ************************ */
 /*          Server          */
 /* ************************ */
@@ -86,6 +82,7 @@ var io = require('socket.io').listen(server);
 io.on('connection', function (socket) {
     var SerialProtocol = require("./classes/SerialProtocol").SerialProtocol;
     serialProto = new SerialProtocol(socket,jade);
+    
     serialProto.sp.on("open", function(){
         serialProto.sp.on('data', function(data){
             serialProto.startProtocol(data);
@@ -100,7 +97,7 @@ io.on('connection', function (socket) {
     });
 
     socket.on('returnField',function(field){
-        var url = "http://api.documathon.tgrange.com/projects/create/project/" + field;
+        var url = "http://api.documathon.tgrange.com/projects/create/" + field;
        
         request({
             url: url,
@@ -119,24 +116,29 @@ io.on('connection', function (socket) {
         serialProto.saveStep(table);
     });
 
-    socket.on('sendImageTest',function(mBase64){
-        //Local
-        //var mUrl = "http://documathon.server:8888/projects/9/addStep/youpiiii";
-
-        //Online
-        var mUrl = "http://api.documathon.tgrange.com/projects/10/addStep/youpiiii";
-        request.post(
-            mUrl,
-            { form: { 'base64': mBase64 } },
-            function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    console.log(body);
-                }else{
-                    console.log(error);
-                }
-            }
-        );
+    socket.on('allReceive',function(){
+        var html = jade.renderFile('views/step_reload.jade');
+        socket.emit('loadDatas', html);
     });
+
+
+    // Protocole ----------------------------------------------
+    socket.on('log',function(){
+        serialProto.startProtocol("log{\"id\": 6,\"name\": \"Faclab\",\"birth\": \"\"}");
+    });
+
+    socket.on('proj',function(){
+        serialProto.startProtocol("prj{\"id\": 1,\"name\": \"Enceintes\"}");
+    });
+
+    socket.on('val',function(){
+        serialProto.startProtocol("btnval");
+    });
+
+    socket.on('shr',function(){
+        serialProto.startProtocol("shr");
+    });
+    // ----------------------------------------------  Protocole
 
 
     function writeAndDrain (data, callback) {

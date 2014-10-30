@@ -8,10 +8,12 @@ socket.on('loadDatas', function(data){
 	changeContentBy($("main"), data);
 });
 
+
 // Return the content of a html tag to the server
 socket.on('getField', function(field){
 	socket.emit('returnField', $('#'+field).val());
 });
+
 
 // The server make the order to start cam
 socket.on('startCam', function(){
@@ -19,14 +21,23 @@ socket.on('startCam', function(){
 	startCamAfterWait(2000);
 });
 
+
 // This socket is used to make a photo from the cam
 socket.on('takeSnapshot', function(){
 	base64 = snapshot();
 });
 
+
 // When the photo is validate, the user can add some text
 socket.on('validateSnapshot', function(){
 	showText();
+});
+
+
+// Stop cam
+socket.on('stopCam', function(){
+	window.stream.stop();
+	hideTitle(false);
 });
 
 
@@ -36,6 +47,7 @@ socket.on('cancelSnapshot', function(){
 	showPhoto(false);
 });
 
+
 // The photo has already been validate. The text is to.
 // We have to send the step to the server, using base64 and text.
 socket.on('validateText', function(){
@@ -44,6 +56,16 @@ socket.on('validateText', function(){
 	array.push($('#formId').val());
 	socket.emit('saveStep', array);
 	base64 = null;
+}); 
+
+
+//The server actualise the step which are already send or not.
+socket.on('oneStepAdd', function(total){
+	actualStepsNumber++;
+	$("#actualStepsNumber").html(actualStepsNumber);
+	if(actualStepsNumber == total){
+		socket.emit('allReceive');
+	}
 }); 
 
 // Add a material to the optional text area

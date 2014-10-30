@@ -3,6 +3,10 @@
 /* ********************************* */
 var serialport = require("serialport");
 var SerialPort = serialport.SerialPort;
+var util = require('../classes/Util');
+var request = require("request");
+var tsession = require("temboo/core/temboosession");
+var session = new tsession.TembooSession("maktub", "myFirstApp", "68357e3c2b544674b4265cc1b5ae41fa");
 
 
 /* **************************** */
@@ -33,7 +37,7 @@ exports.SerialProtocol = SerialProtocol = function(socket, jade) {
     /////////////////////////////////////////
     //          SerialPort Config          //
     /////////////////////////////////////////
-    this.sp = new SerialPort("/dev/tty.usbmodem1421", {
+    this.sp = new SerialPort("/dev/tty.usbmodem1411", {
         parser: serialport.parsers.readline("\n"),
         baudrate: 9600
     });
@@ -43,7 +47,7 @@ exports.SerialProtocol = SerialProtocol = function(socket, jade) {
 /**
 *   This function is call to start the protocol.
 *   It is not realy a constructor, but it is necessary to 
-*   Call that function to strat the protocol gestion.
+*   Call that function to start the protocol gestion.
 *   
 *   This function is call each time there is someting on the serial port
 */
@@ -108,11 +112,11 @@ SerialProtocol.prototype.saveStep= function(table){
     this.myContext.actualStep.text = table[1];
     this.myContext.saveActualStep();
 
-    var html = this.jade.renderFile('views/stepCam.jade');
+    var html = this.jade.renderFile('views/stepCam.jade', {dev: util.isDev });
     this.socket.emit('loadDatas', html);
     this.socket.emit('startCam');
+    this.emitSuccess("Etape sauvegardée");
 
-    console.log(this.myContext.myProject);
     this.myContext.actualStep = new Step();
 }
 
@@ -142,7 +146,7 @@ SerialProtocol.prototype.instructionLogin = function(data){
     var html = null;
     var error = this.myContext.makeAuthor(data);
     if(error == 1){
-        html = this.jade.renderFile('views/project.jade', {name:this.myContext.myAuthor.name});
+        html = this.jade.renderFile('views/project.jade', {name:this.myContext.myAuthor.name, dev: util.isDev });
         this.myContext.documentationStep = 1;
     }
 
@@ -161,11 +165,11 @@ SerialProtocol.prototype.instructionProject = function(data){
     var error = this.myContext.makeProject(data);
     if(error == 1){
         this.socket.emit('startCam');
-        html = this.jade.renderFile('views/stepCam.jade');
+        html = this.jade.renderFile('views/stepCam.jade', {name:this.myContext.myAuthor.name, dev: util.isDev });
         this.myContext.documentationStep = 3;
     }
     else{
-        html = this.jade.renderFile('views/newProject.jade');
+        html = this.jade.renderFile('views/newProject.jade', {dev: util.isDev });
         this.myContext.documentationStep = 2;
     }
 
@@ -190,7 +194,44 @@ SerialProtocol.prototype.instructionButton = function(data){
 SerialProtocol.prototype.instructionShare = function(data){
     switch(this.myContext.documentationStep){
         case 3:
-            this.emitSuccess("En cours d'envoi");
+            if(data.length > 3)
+                data = data.substr(0, 6);
+            else
+                data = data.substr(0, 3);
+
+            this.myContext.twitter = ((data == "twi") || data == ("twifac") || (data == "factwi"));
+            this.myContext.facebook = ((data == "fac") || data == ("twifac") || (data == "factwi"));
+
+
+            //Get all steps 
+            var steps = this.myContext.myProject.steps;
+            
+            //Load new page
+            var html = this.jade.renderFile('views/step_load.jade', {dev: util.isDev, totalStep: steps.length});
+            this.socket.emit('loadDatas', html);
+            this.socket.emit('stopCam');
+
+            //Send all steps
+            var mUrl = "http://api.documathon.tgrange.com/projects/";
+            mUrl += this.myContext.myProject.id;
+            mUrl += "/add/step";
+
+            for (var i = 0 ; i < steps.length ; i++) {
+                this.sendStep(
+                    mUrl, 
+                    { 'base64': steps[0].base, 'text': steps[i].text }, 
+                    function(error, response, body) {
+                        if (!error && response.statusCode == 200) {
+                            this.sp.saveAuthorForStep(body, this.author, this.sp, this.length);
+                            if(this.iteration == this.length - 1)
+                                this.sp.shortenUrlPdf(this.sp);
+                        }else{
+                            console.log("Pas ok");
+                        }
+                    }.bind({sp: this, author: this.myContext.myAuthor, length: steps.length, iteration: i})
+                )
+            }
+
             break;
         default:
             this.emitWarning("Valide ta photo et ton étape avant de partager ton projet!");
@@ -237,16 +278,84 @@ SerialProtocol.prototype.instructionValidate = function(data){
     }
 }
 
-// function decodeBase64Image(dataString) {
-//     var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
-//     response = {};
+SerialProtocol.prototype.shortenUrlPdf = function(sp){
+    var id = sp.myContext.myProject.id;
 
-//     if (matches.length !== 3) {
-//     return new Error('Invalid input string');
-//     }
+    var Bitly = require("temboo/Library/Bitly/Links");
 
-//     response.type = matches[1];
-//     response.data = new Buffer(matches[2], 'base64');
+    var shortenURLChoreo = new Bitly.ShortenURL(session);
+    var shortenURLInputs = shortenURLChoreo.newInputSet();
 
-//     return response;
-// }
+    shortenURLInputs.set_AccessToken("6240aadd5069683e93b6f711165d2a0e60512462");
+    shortenURLInputs.set_LongURL("http://images.documathon.tgrange.com/" + id + "/project.pdf");
+
+    shortenURLChoreo.execute(
+        shortenURLInputs,
+        function(results){
+
+            var url = results.get_Response();
+            console.log(url);
+            this.sp.shareOnTwitter(this.sp, url);
+            this.sp.shareOnFacebook(this.sp, url);
+
+        }.bind({sp: this}),
+        function(error){console.log(error.type); console.log(error.message);}
+    );
+}
+
+SerialProtocol.prototype.shareOnTwitter = function(sp, url){
+    
+    if(!sp.myContext.twitter)
+        return;
+
+    var Twitter = require("temboo/Library/Twitter/Tweets");
+    var statusesUpdateChoreo = new Twitter.StatusesUpdate(session);
+    var statusesUpdateInputs = statusesUpdateChoreo.newInputSet();
+
+    // Set inputs
+    statusesUpdateInputs.set_AccessToken("2848548681-b6hMBXDumMVc9DhW8ViuCIbcL6CasWHldvfQZhV");
+    statusesUpdateInputs.set_AccessTokenSecret("X5gDs1P11qvTRvFuI4dk6LiKZ0A0GkIhSnccOPEOTS6vD");
+    statusesUpdateInputs.set_ConsumerSecret("92jH2kQZEDFjoNTAwSk63vOmVWt3x3Nphkqu6m6ojSGPDCjPlD");
+
+    var title = sp.myContext.myProject.name;
+    var author = sp.myContext.myAuthor.name;
+    statusesUpdateInputs.set_StatusUpdate("Le projet " + title + " a été documenté par " + author + "! #documathon #faclab " + url + " - " + new Date().toISOString());
+    statusesUpdateInputs.set_ConsumerKey("iIPxXKKyVUyt9E5IF87cNe34M");
+
+
+    // Run the choreo, specifying success and error callback handlers
+    statusesUpdateChoreo.execute(
+        statusesUpdateInputs,
+        function(results){console.log(results.get_Response());},
+        function(error){console.log(error.type); console.log(error.message);}
+    );
+
+
+
+}
+
+SerialProtocol.prototype.shareOnFacebook = function(sp, url){
+    if(!sp.myContext.facebook)
+        return;
+}
+
+SerialProtocol.prototype.sendStep = function(url, inForm, callback){
+    request.post(url, { form:  inForm }, callback);   
+}
+
+
+SerialProtocol.prototype.saveAuthorForStep = function(mBody, author, sp, length){
+    var json = JSON.parse(mBody);
+    var id = json.datas;
+    var url2 = "http://api.documathon.tgrange.com/authors/" + author.id + "/contribute/" + id;
+    console.log(url2);
+
+    request({
+        url: url2,
+        json: true
+    }, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            sp.socket.emit('oneStepAdd', length);
+        }
+    });
+}

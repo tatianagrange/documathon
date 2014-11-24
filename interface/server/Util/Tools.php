@@ -50,11 +50,9 @@ class Tools
 		return $data != null;
 	}
 
-	public static function base64ToJpeg($base64, $file) {
-        $ifp = fopen($file, "wb"); 
-        $data = explode(',', $base64);
-        fwrite($ifp, base64_decode($data[1])); 
-        fclose($ifp);
+	public static function base64ToJpeg($base64, $file) { 
+        $decode = base64_decode($base64);
+        file_put_contents($file, $decode); 
     }
 
 	public static function isInteger($input){

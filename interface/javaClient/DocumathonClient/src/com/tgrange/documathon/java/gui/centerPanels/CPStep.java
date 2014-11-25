@@ -33,7 +33,9 @@ public class CPStep extends JPanel {
 	public CPStep(Webcam webcam) {
 		
 		videoPanel = new WebcamPanel(webcam);
-		//videoPanel.setFPSDisplayed(true);
+		videoPanel.setFPSDisplayed(true);
+		videoPanel.setFPSLimited(true);
+		videoPanel.setFPSLimit(1);
 		videoPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		videoPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
 		videoPanel.setSize(webcam.getViewSize());

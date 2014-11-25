@@ -17,6 +17,7 @@ String readString;
 /*    Share declaration      */
 /* ************************* */
 LedButton twitter(2,8);
+LedButton printbtn(4,6);
 LedButton facebook(3,9);
 SwitchButton ok(10);
 SwitchButton down(12);
@@ -56,6 +57,7 @@ void loop() {
   }
   
   twitter.switchLed();
+  printbtn.switchLed();
   facebook.switchLed();
   ok.makeSwitch();
   down.makeSwitch();

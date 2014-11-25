@@ -1,9 +1,5 @@
 package com.tgrange.documathon.java.controler;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-
 import javax.swing.JFrame;
 
 import jssc.SerialPort;
@@ -47,6 +43,8 @@ public class MainControler implements ButtonsListener, MenuListener{
 			frame.setListener(this);
 			frame.setVisible(true);
 			frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+			
+			Process pb = new ProcessBuilder("/opt/vc/bin/raspistill",  "-o", "tessssst.jpg", "-w", "640", "-h", "480").start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -4,13 +4,18 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamUtils;
 import com.tgrange.documathon.java.controler.ICPControler;
 import com.tgrange.documathon.java.controler.listeners.ButtonsListener;
 import com.tgrange.documathon.java.gui.centerPanels.CPStep;
@@ -34,8 +39,9 @@ public class CPControlerStep  implements ICPControler, ButtonsListener{
 	public CPControlerStep(int projectId){
 		Dimension[] dimensions = webcam.getViewSizes();
 		for(Dimension d : dimensions){
-			if(d.width <= Toolkit.getDefaultToolkit().getScreenSize().getWidth()/3)
+			if(d.width <= Toolkit.getDefaultToolkit().getScreenSize().getWidth()/3){
 				webcam.setViewSize(d);
+			}
 			else
 				break;
 		}

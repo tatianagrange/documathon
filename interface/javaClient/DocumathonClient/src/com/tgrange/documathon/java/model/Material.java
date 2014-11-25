@@ -78,6 +78,12 @@ public class Material {
 		this.length = length;
 		this.thickness = thickness;
 	}
+	
+	public Material(int id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
     
     
 }

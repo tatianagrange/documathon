@@ -4,7 +4,8 @@ import com.temboo.core.TembooException;
 import com.temboo.core.TembooSession;
 
 public class App {
-	public static boolean IS_DEV = true;
+	public static boolean IS_DEV = false;
+	public static boolean IS_CHINA = true;
 	private static TembooSession session = null;
 	public static App instance = null;
 	

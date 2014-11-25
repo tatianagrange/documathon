@@ -131,34 +131,19 @@ public class Project {
 	public void setLang(String lang) {
 		this.lang = lang;
 	}
-    
-	public String getTextForTools(){
-		if(tools.size() == 0)
-			return "";
-		
-		String toReturn = "Outils: ";
-		for(Tool tool : tools){
-			toReturn += tool.getName();
-			toReturn += ", ";
+
+	public void addMaterial(Material mat) {
+		boolean alreadyInList = false;
+		for(Material m : materials){
+			if(m.getId() == mat.getId()){
+				alreadyInList = true;
+				break;
+			}
+		}
+		if(!alreadyInList){
+			materials.add(mat);
 		}
 		
-		toReturn = toReturn.substring(0, toReturn.length()-2) + ".";
-		return toReturn;
-	}
-	
-	public String getTextForMaterials(){
-		if(materials.size() == 0)
-			return "";
-		
-		String toReturn = "Outils: ";
-		for(Material mat : materials){
-			toReturn += mat.getName();
-			//Show width, lenght and thickness
-			toReturn += ", ";
-		}
-		
-		toReturn = toReturn.substring(0, toReturn.length()-2) + ".";
-		return toReturn;
 	}
     
 }

@@ -29,13 +29,12 @@ public class CPStep extends JPanel {
 	private JLabel image;
 	private JPanel footer;
 	private JTextArea textArea;
+	private String textMat = "";
+	private String textToo = "";
 
 	public CPStep(Webcam webcam) {
 		
 		videoPanel = new WebcamPanel(webcam);
-		videoPanel.setFPSDisplayed(true);
-		videoPanel.setFPSLimited(true);
-		videoPanel.setFPSLimit(1);
 		videoPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		videoPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
 		videoPanel.setSize(webcam.getViewSize());
@@ -188,6 +187,33 @@ public class CPStep extends JPanel {
 		changeToVideo();
 		repaint();
 		revalidate();
+	}
+
+	public void updateTextForMaterial(String textForMaterials) {
+		this.textMat = textForMaterials;
+		System.out.println(this.textMat);
+		updateText();
+	}
+	
+	public void updateTextForTools(String textForTools) {
+		this.textToo = textForTools;
+		updateText();
+	}
+
+	private void updateText() {
+		String lines[] = textArea.getText().split("\\r?\\n");
+		
+		String text = "";
+		for( int i = 0 ; i < lines.length ; i++){
+			
+			if(!lines[i].startsWith(">")){
+				text += lines[i];
+			}
+		}
+
+		textArea.setText( this.textMat + this.textToo + text);
+		textArea.repaint();
+		textArea.revalidate();
 	}
 
 }

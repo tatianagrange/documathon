@@ -1,4 +1,4 @@
-package com.tgrange.documathon.java.controler;
+package com.tgrange.documathon.java.tools;
 
 import java.sql.Timestamp;
 
@@ -13,7 +13,9 @@ import org.json.simple.parser.ParseException;
 
 import com.tgrange.documathon.java.controler.listeners.ButtonsListener;
 import com.tgrange.documathon.java.model.Author;
+import com.tgrange.documathon.java.model.Material;
 import com.tgrange.documathon.java.model.Project;
+import com.tgrange.documathon.java.model.Tool;
 
 public class SerialPortReader implements SerialPortEventListener {
 
@@ -41,6 +43,7 @@ public class SerialPortReader implements SerialPortEventListener {
 					end = End.SLASH;
 				else if(buffer[0] == 10 && end == End.SLASH){
 					end = End.SLASH_N;
+					System.out.println(instruction);
 					parseInstruction(instruction);
 					instruction = "";
 					
@@ -82,9 +85,28 @@ public class SerialPortReader implements SerialPortEventListener {
 			}
 			listener.onProject(project);
 		}else if(mainInstruction.equals("too")){
-			listener.onTool(s.substring(3));
+			Tool tool = null;
+			try {
+				JSONObject jsonTool = (JSONObject)parser.parse(s.substring(3));
+				tool = new Tool(
+						((Long)jsonTool.get("id")).intValue(),
+						(String)jsonTool.get("name"));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			listener.onTool(tool);
 		}else if(mainInstruction.equals("mat")){
-			listener.onMaterial(s.substring(3));
+			Material mat = null;
+			try {
+				JSONObject jsonTool = (JSONObject)parser.parse(s.substring(3));
+				mat = new Material(
+						((Long)jsonTool.get("id")).intValue(),
+						(String)jsonTool.get("name"));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			listener.onMaterial(mat);
 		}else if(mainInstruction.equals("btn")){
 			String secondInstruction = s.substring(3,6);
 			if(secondInstruction.equals("can")){

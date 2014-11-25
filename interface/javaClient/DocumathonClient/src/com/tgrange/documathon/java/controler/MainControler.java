@@ -13,7 +13,10 @@ import com.tgrange.documathon.java.controler.listeners.ButtonsListener;
 import com.tgrange.documathon.java.controler.listeners.MenuListener;
 import com.tgrange.documathon.java.gui.DocumathonJFrame;
 import com.tgrange.documathon.java.model.Author;
+import com.tgrange.documathon.java.model.Material;
 import com.tgrange.documathon.java.model.Project;
+import com.tgrange.documathon.java.model.Tool;
+import com.tgrange.documathon.java.tools.SerialPortReader;
 
 public class MainControler implements ButtonsListener, MenuListener{
 
@@ -44,7 +47,6 @@ public class MainControler implements ButtonsListener, MenuListener{
 			frame.setVisible(true);
 			frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 			
-			Process pb = new ProcessBuilder("/opt/vc/bin/raspistill",  "-o", "tessssst.jpg", "-w", "640", "-h", "480").start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -118,7 +120,7 @@ public class MainControler implements ButtonsListener, MenuListener{
 	
 	@Override
 	public void onShareOn(String substring) {
-		if(state == State.ADD_STEP && actualProject.getSteps().size() > 0){
+		if(state == State.ADD_STEP && ((CPControlerStep)center).getSteps().size() > 0){
 			state = State.LOADING;
 			((CPControlerStep)center).stopWebcam();
 			actualProject.setSteps(((CPControlerStep)center).getSteps());
@@ -159,15 +161,17 @@ public class MainControler implements ButtonsListener, MenuListener{
 
 
 	@Override
-	public void onTool(String substring) {
+	public void onTool(Tool tool) {
 		
 	}
 
 
 	@Override
-	public void onMaterial(String substring) {
-		// TODO Auto-generated method stub
-
+	public void onMaterial(Material mat) {
+		if(state == State.ADD_STEP){
+			actualProject.addMaterial(mat);
+			((CPControlerStep)center).addMaterial(mat);
+		}
 	}
 
 	@Override

@@ -55,32 +55,34 @@ public class CPControlerShare implements ICPControler {
 					}
 				}
 				//Get PDF URL
-				String shortURL = "";
-				try {
-					ShortenURL shortenURLChoreo = new ShortenURL(App.getInstance().getTembooSession());
-					ShortenURLInputSet shortenURLInputs = shortenURLChoreo.newInputSet();
-					shortenURLInputs.setCredential("DocumathonShort");
-					shortenURLInputs.set_LongURL(API.PDF_URL.replace("X", "1"));
-					ShortenURLResultSet shortenURLResults = shortenURLChoreo.execute(shortenURLInputs);
-					shortURL = shortenURLResults.get_Response();
-					System.out.println(shortURL);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-				if(twitter){
-					StatusesUpdate statusesUpdateChoreo;
+				if(!App.IS_CHINA){
+					String shortURL = "";
 					try {
-						statusesUpdateChoreo = new StatusesUpdate(App.getInstance().getTembooSession());
-						StatusesUpdateInputSet statusesUpdateInputs = statusesUpdateChoreo.newInputSet();
-						statusesUpdateInputs.setCredential("Documathon");
-						statusesUpdateInputs.set_StatusUpdate("Le projet " + project.getName() + " a été documenté par " + author.getName() + "! #documathon #faclab " + shortURL + " - " + new SimpleDateFormat("dd-MM-yyyy à HH:mm:ss").format(new Date()));
-						StatusesUpdateResultSet statusesUpdateResults = statusesUpdateChoreo.execute(statusesUpdateInputs);
-						System.out.println(statusesUpdateResults.get_Response());
+						ShortenURL shortenURLChoreo = new ShortenURL(App.getInstance().getTembooSession());
+						ShortenURLInputSet shortenURLInputs = shortenURLChoreo.newInputSet();
+						shortenURLInputs.setCredential("DocumathonShort");
+						shortenURLInputs.set_LongURL(API.PDF_URL.replace("X", project.getId() + ""));
+						ShortenURLResultSet shortenURLResults = shortenURLChoreo.execute(shortenURLInputs);
+						shortURL = shortenURLResults.get_Response();
+						System.out.println(shortURL);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 
+					if(twitter){
+						StatusesUpdate statusesUpdateChoreo;
+						try {
+							statusesUpdateChoreo = new StatusesUpdate(App.getInstance().getTembooSession());
+							StatusesUpdateInputSet statusesUpdateInputs = statusesUpdateChoreo.newInputSet();
+							statusesUpdateInputs.setCredential("Documathon");
+							statusesUpdateInputs.set_StatusUpdate("Le projet " + project.getName() + " a été documenté par " + author.getName() + "! #documathon #faclab " + shortURL + " - " + new SimpleDateFormat("dd-MM-yyyy à HH:mm:ss").format(new Date()));
+							StatusesUpdateResultSet statusesUpdateResults = statusesUpdateChoreo.execute(statusesUpdateInputs);
+							System.out.println(statusesUpdateResults.get_Response());
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+					}
 				}
 			}
 		});

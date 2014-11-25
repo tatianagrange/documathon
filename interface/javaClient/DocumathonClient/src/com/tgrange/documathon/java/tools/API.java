@@ -17,11 +17,11 @@ import com.tgrange.documathon.java.model.Step;
 
 public class API {
 
-	public static String URL = "http://api.documathon.tgrange.com";
+	public static String URL = "http://server.documathon:8888";
 	public static String ADD_STEP = URL + "/projects/X/add/step";
 	public static String ADD_AUTHOR_FOR_STEP = URL + "/authors/X/contribute/Y";
 
-	public static String IMAGE_URL = "http://images.documathon.tgrange.com";
+	public static String IMAGE_URL = "http://images.documathon:8888";
 	public static String PDF_URL = IMAGE_URL + "/X/project.pdf";
 
 

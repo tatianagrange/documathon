@@ -4,24 +4,21 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamUtils;
 import com.tgrange.documathon.java.controler.ICPControler;
 import com.tgrange.documathon.java.controler.listeners.ButtonsListener;
 import com.tgrange.documathon.java.gui.centerPanels.CPStep;
 import com.tgrange.documathon.java.model.Author;
+import com.tgrange.documathon.java.model.Material;
 import com.tgrange.documathon.java.model.Project;
 import com.tgrange.documathon.java.model.Step;
+import com.tgrange.documathon.java.model.Tool;
 
 public class CPControlerStep  implements ICPControler, ButtonsListener{
 
@@ -29,6 +26,8 @@ public class CPControlerStep  implements ICPControler, ButtonsListener{
 	public enum State {VIDEO, VALIDATE_PHOTO, VALIDATE_TEXT, VALIDATE_STEP}
 	private Step actualStep;
 	private ArrayList<Step> steps;
+	private ArrayList<Tool> tools;
+	private ArrayList<Material> materials;
 	private int projectId;
 	private State state = State.VIDEO;
 	
@@ -50,6 +49,8 @@ public class CPControlerStep  implements ICPControler, ButtonsListener{
 		actualStep = new Step(projectId);
 		this.projectId = projectId;
 		steps = new ArrayList<Step>();
+		tools = new ArrayList<Tool>();
+		materials = new ArrayList<Material>();
 	}
 	
 	public CPControlerStep(ButtonsListener ec, int projectId){
@@ -73,7 +74,68 @@ public class CPControlerStep  implements ICPControler, ButtonsListener{
 	public JPanel getCenterPanel() {
 		return center;
 	}
-
+	
+	public void addMaterial(Material mat) {
+		boolean b = false;
+		System.out.println(materials.size());
+		for(Material m : materials){
+			if(m.getId() == mat.getId()){
+				materials.remove(m);
+				b = true;
+				break;
+			}
+		}
+		if(!b)
+			materials.add(mat);
+		System.out.println(materials.size());
+		center.updateTextForMaterial(getTextForMaterials());
+	}
+	
+	public void addTool(Tool tool) {
+		Integer index = null;
+		for(Tool t : tools){
+			if(t.getId() == tool.getId()){
+				index = tools.indexOf(t);
+				break;
+			}
+		}
+		if(index == null)
+			tools.add(tool);
+		else
+			tools.remove(index);
+		
+		center.updateTextForMaterial(getTextForTools());
+	}
+	
+	private String getTextForTools(){
+		if(tools.size() == 0)
+			return "";
+		
+		String toReturn = ">Outils: ";
+		for(Tool tool : tools){
+			toReturn += tool.getName();
+			toReturn += ", ";
+		}
+		
+		toReturn = toReturn.substring(0, toReturn.length()-2) + ".\n";
+		return toReturn;
+	}
+	
+	private String getTextForMaterials(){
+		if(materials.size() == 0)
+			return "";
+		
+		String toReturn = ">Matériaux: ";
+		for(Material mat : materials){
+			toReturn += mat.getName();
+			//Show width, lenght and thickness
+			toReturn += ", ";
+		}
+		
+		toReturn = toReturn.substring(0, toReturn.length()-2) + ".\n";
+		return toReturn;
+	}
+	
 	@Override
 	public void onBtnCancel() {
 		switch(state){
@@ -126,6 +188,8 @@ public class CPControlerStep  implements ICPControler, ButtonsListener{
 			state = State.VIDEO;
 			steps.add(actualStep);
 			actualStep = new Step(this.projectId);
+			tools = new ArrayList<Tool>();
+			materials = new ArrayList<Material>();
 			center.reset();
 			return;
 		}
@@ -143,9 +207,9 @@ public class CPControlerStep  implements ICPControler, ButtonsListener{
 
 	
 	@Override
-	public void onTool(String substring) {}
+	public void onTool(Tool tools) {}
 	@Override
-	public void onMaterial(String substring) {}
+	public void onMaterial(Material mat) {}
 	@Override
 	public void onLog(Author author) {}
 	@Override
@@ -154,6 +218,10 @@ public class CPControlerStep  implements ICPControler, ButtonsListener{
 	public void onNotification() {}
 	@Override
 	public void onServerInstruction() {}
+
+
+
+
 	
 	
 }

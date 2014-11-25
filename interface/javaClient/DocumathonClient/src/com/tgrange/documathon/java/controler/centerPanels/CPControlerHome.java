@@ -28,6 +28,10 @@ public class CPControlerHome implements ICPControler{
 	public void logWith(Author author) {
 		center.changeWithLogString(author.getName());
 	}
+
+	public void loading() {
+		center.loading();
+	}
 	
 	
 

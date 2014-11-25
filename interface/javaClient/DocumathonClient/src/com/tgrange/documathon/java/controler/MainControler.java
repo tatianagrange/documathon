@@ -1,6 +1,7 @@
 package com.tgrange.documathon.java.controler;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
@@ -113,6 +114,7 @@ public class MainControler implements ButtonsListener, MenuListener{
 				project = new Project(1,"Enceinte");
 			actualProject = project;
 
+			((CPControlerHome)center).loading();
 			center = new CPControlerStep(this, actualProject.getId());
 			frame.setCenter(center.getCenterPanel());
 		}

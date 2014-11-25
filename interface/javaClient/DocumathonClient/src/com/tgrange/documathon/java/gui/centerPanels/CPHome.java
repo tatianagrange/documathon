@@ -67,4 +67,10 @@ public class CPHome extends JPanel {
 
 	}
 
+	public void loading() {
+		label.setText("Loading Webcam...");
+		label.repaint();
+		label.revalidate();
+	}
+
 }

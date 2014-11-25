@@ -24,7 +24,13 @@ public class CPControlerShare implements ICPControler {
 	private Author author;
 	private Project project;
 	private CPShare center;
-	private boolean twitter;
+	private boolean twitter;			
+	private boolean end = false;
+
+	public boolean isEnd() {
+		return end;
+	}
+
 
 	public CPControlerShare(Author actualAuthor, Project actualProject) {
 		this.project = actualProject;
@@ -42,6 +48,7 @@ public class CPControlerShare implements ICPControler {
 
 	public void run() {
 		Thread background = new Thread(new Runnable() {
+
 			public void run() {
 				for(Step step : project.getSteps()){
 					API api = new API();
@@ -84,6 +91,9 @@ public class CPControlerShare implements ICPControler {
 
 					}
 				}
+				
+				end  = true;
+				center.end(API.PDF_URL.replace("X", project.getId() + ""));
 			}
 		});
 

@@ -150,6 +150,11 @@ public class MainControler implements ButtonsListener, MenuListener{
 	public void onBtnDone() {
 		if(state == State.ADD_STEP)
 			((CPControlerStep)center).onBtnDone();
+		if(state == State.LOADING && ((CPControlerShare)center).isEnd()){
+			center = new CPControlerHome((ButtonsListener)this);
+			state = State.HOME;
+			frame.setCenter(center.getCenterPanel());
+		}
 	}
 
 
@@ -161,9 +166,7 @@ public class MainControler implements ButtonsListener, MenuListener{
 
 
 	@Override
-	public void onTool(Tool tool) {
-		
-	}
+	public void onTool(Tool tool) {}
 
 
 	@Override

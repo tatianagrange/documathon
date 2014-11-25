@@ -45,4 +45,10 @@ public class CPShare extends JPanel {
 		progressBar.repaint();
 	}
 
+	public void end(String replace) {
+		remove(progressBar);
+		
+		progressBarLabel.setText("Partage terminé. Voir le lien ici: " + replace + "\n Appuyer sur Valider pour passer à la suite");
+	}
+
 }

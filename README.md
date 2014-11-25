@@ -23,19 +23,21 @@ Le projet est divisé en plusieurs parties, elles même à nouveau divisables en
 
 	.
 	├── doc
-	├── interface
 	├── hooks
-	└── object
-	    ├── arduino
-	    │   └── searchs
-	    │       ├── box
-	    │       ├── multiplexeur
-	    │       └── nfc
-	    ├── box
-	    └── rasp
+	├── interface
+	│   ├── javaClient
+	│   ├── nodeClient
+	│   ├── server
+	│   └── tests
+	├── object
+	│   ├── arduino
+	│   ├── box
+	│   └── rasp
+	└──
+	
 On trouve dans **doc** toute la documentation des projets. On la retrouve néanmoins dans chaque partie dans les **README**.
 
-Dans **interface** se trouve tout le code lié à ce que vera l'utilisateur à l'écran quand il documentera le projet.
+Dans **interface** se trouve tout le code lié à l'interface, que ce soit au niveau du serveur ou de l'application que l'utilisateur aura en face de lui. Il y a deux type de client. Un client node et un client Java. C'est le client en java qui est utilisé actuellement.
 
 Dans **object** se trouve tout ce qui est lié à l'objet physique. On y retrouve les recherches et les codes arduino, tout ce qui est lié à la boîte et tout ce qui concerne le Raspberry Pie.
 

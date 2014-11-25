@@ -17,6 +17,8 @@ racine=$prefix"README.md"
 
 interface=$prefix"interface/README.md"
 aboutServer=$prefix"interface/server/README.md"
+aboutJavaClient=$prefix"interface/javaClient/README.md"
+aboutNodeClient=$prefix"interface/nodeClient/README.md"
 
 object=$prefix"object/README.md"
 aboutBox=$prefix"object/box/README.md"
@@ -49,6 +51,8 @@ add $aboutBox
 add $aboutArduino
 add $aboutRasp
 add $interface
+add $aboutNodeClient
+add $aboutJavaClient
 add $aboutServer
 
 echo "4. Amend commit to add the changes in documentation if needed"
